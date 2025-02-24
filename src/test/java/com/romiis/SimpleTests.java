@@ -50,6 +50,17 @@ public class SimpleTests {
         assertFalse(equalLib.areEqual(setA, setB));
     }
 
+    @DisplayName("Primitive Object test")
+    @Test
+    public void areEqualPrimitiveObject() {
+        PrimitiveObject a = new PrimitiveObject(1, "a", 1.0f, 1.0, true, 'a');
+        PrimitiveObject b = new PrimitiveObject(1, "a", 1.0f, 1.0, true, 'a');
+
+        EqualLib equalLib = new EqualLib();
+
+        assert equalLib.areEqual(a, b);
+    }
+
 
     @DisplayName("Simple Equality Test")
     @Test
