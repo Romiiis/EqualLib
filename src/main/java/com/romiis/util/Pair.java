@@ -1,4 +1,6 @@
-package com.romiis;
+package com.romiis.util;
+
+import com.romiis.core.EqualLib;
 
 /**
  * A record that stores two objects (Pair) for easier storage and comparison.

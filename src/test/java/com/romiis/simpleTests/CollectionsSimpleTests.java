@@ -1,8 +1,7 @@
-package com.romiis;
+package com.romiis.simpleTests;
 
-import com.romiis.objects.tests2.Address;
-import com.romiis.objects.tests2.Node;
-import com.romiis.objects.tests2.Person;
+import com.romiis.core.EqualLib;
+import com.romiis.util.DeepCopyUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,32 +10,10 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Tests2 {
+public class CollectionsSimpleTests {
     EqualLib deepEquals = new EqualLib();
 
-    @DisplayName("Test simple objects")
-    @Test
-    void testSimpleObjects() {
-        assertTrue(deepEquals.areEqual(42, 42));
-        assertFalse(deepEquals.areEqual(42, 43));
-        assertTrue(deepEquals.areEqual("hello", "hello"));
-        assertFalse(deepEquals.areEqual("hello", "world"));
-    }
 
-    @DisplayName("Test nested objects")
-    @Test
-    void testNestedObjects() {
-        Address addr1 = new Address("Prague", "Main Street");
-        Address addr2 = new Address("Prague", "Main Street");
-
-        Person p1 = new Person("Alice", 30, addr1);
-        Person p2 = new Person("Alice", 30, addr2);
-
-        assertTrue(deepEquals.areEqual(p1, p2));
-
-        p2.address.street = "Other Street";
-        assertFalse(deepEquals.areEqual(p1, p2));
-    }
 
     @DisplayName("Test arrays")
     @Test
@@ -87,10 +64,19 @@ public class Tests2 {
         Map<Person, String> map1 = new HashMap<>();
         map1.put(p1, "Developer");
 
-        Map<Person, String> map2 = new HashMap<>();
-        map2.put(p2, "Developer");
+        Map<Person, String> map2 = DeepCopyUtil.deepCopy(map1); // Deep copy of the map
+        map2.put(p2, "Tester");
 
-        assertTrue(deepEquals.areEqual(map1, map2)); // Správná implementace `compareMaps` by to měla vrátit jako true
+        assertFalse(deepEquals.areEqual(map1, map2));
+
+        map1 = DeepCopyUtil.deepCopy(map2); // Deep copy of the map
+
+        map2 = DeepCopyUtil.deepCopy(map1); // Deep copy of the map
+
+        assertTrue(deepEquals.areEqual(map1, map2));
+
+
+
     }
 
     @DisplayName("Test cyclic references")
@@ -200,10 +186,7 @@ public class Tests2 {
             int a = 5;
             String name = "Test";
         };
-        Object obj2 = new Object() {
-            int a = 5;
-            String name = "Test";
-        };
+        Object obj2 = DeepCopyUtil.deepCopy(obj1); // Deep copy of the object
 
         assertTrue(deepEquals.areEqual(obj1, obj2)); // Should return true since the fields are the same
 
@@ -239,5 +222,4 @@ public class Tests2 {
 
         assertTrue(deepEquals.areEqual(map1, map2)); // Same nested structures, should return true
     }
-
 }

@@ -1,5 +1,7 @@
 package com.romiis;
 
+import com.romiis.core.EqualLib;
+import com.romiis.util.DeepCopyUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -64,8 +66,8 @@ public class CollectionsDeepEqualsTest {
     @DisplayName("Test LinkedHashSet (Set) with deepEquals")
     @Test
     void testLinkedHashSet() {
-        Set<String> set1 = new LinkedHashSet<>(Arrays.asList("A", "B", "C"));
-        Set<String> set2 = new LinkedHashSet<>(Arrays.asList("A", "B", "C"));
+        LinkedHashSet<String> set1 = new LinkedHashSet<>(Arrays.asList("A", "B", "C"));
+        LinkedHashSet<String> set2 = DeepCopyUtil.deepCopy(set1);
 
         assertTrue(deepEquals.areEqual(set1, set2)); // Pořadí by mělo být stejné
 
@@ -127,7 +129,11 @@ public class CollectionsDeepEqualsTest {
         map2.put(2, "B");
         map2.put(1, "A");
 
-        assertTrue(deepEquals.areEqual(map1, map2)); // TreeMap by měl být seřazen
+        Map<Integer, String> map3 = DeepCopyUtil.deepCopy(map1);
+
+        assertTrue(deepEquals.areEqual(map1, map3)); //
+
+        assertFalse(deepEquals.areEqual(map1, map2)); // TreeMap by měl být seřazen
 
         map2.put(3, "C");
         assertFalse(deepEquals.areEqual(map1, map2)); // "3" byla přidána

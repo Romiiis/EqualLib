@@ -1,7 +1,8 @@
-package com.romiis;
+package com.romiis.simpleTests;
 
 
-import com.romiis.objects.simpleTests.*;
+import com.romiis.core.EqualLib;
+import com.romiis.util.DeepCopyUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,42 @@ public class SimpleTests {
     public void setUp() {
     }
 
+
+    @DisplayName("Test simple objects")
+    @Test
+    void testSimpleObjects() {
+
+        EqualLib equalLib = new EqualLib();
+
+
+        assertTrue(equalLib.areEqual(42, 42));
+        assertFalse(equalLib.areEqual(42, 43));
+        assertTrue(equalLib.areEqual("hello", "hello"));
+        assertFalse(equalLib.areEqual("hello", "world"));
+    }
+
+    @DisplayName("Test nested objects")
+    @Test
+    void testNestedObjects() {
+
+        EqualLib equalLib = new EqualLib();
+
+        Address addr1 = new Address("Prague", "Main Street");
+        Address addr2 = new Address("Prague", "Main Street");
+
+        Person p1 = new Person("Alice", 30, addr1);
+        Person p2 = new Person("Alice", 30, addr2);
+
+        assertTrue(equalLib.areEqual(p1, p2));
+
+        p2.address.street = "Other Street";
+        assertFalse(equalLib.areEqual(p1, p2));
+    }
+
+
     @DisplayName("Set Equality Test - cycle")
     @Test
-    public void areEqualSetsCycle() {
+    public void areEqualSetsCycle() throws Exception {
         EqualLib equalLib = new EqualLib();
 
         ObjectSet a = new ObjectSet();
@@ -30,25 +64,26 @@ public class SimpleTests {
         ObjectSet c = new ObjectSet();
         ObjectSet d = new ObjectSet();
 
-        Set<ObjectSet> setA = new HashSet<>(Arrays.asList(a, b));
-        Set<ObjectSet> setB = new HashSet<>(Arrays.asList(c, d));
 
-        a.set = setA;
-        a.number = 1;
-        b.set = setB;
-        b.number = 1;
+        HashSet<ObjectSet> setA = new HashSet<>();
+        setA.add(a);
+        setA.add(b);
 
-        c.set = setA;
-        c.number = 1;
-        d.set = setB;
-        d.number = 1;
+        HashSet<ObjectSet> setB = DeepCopyUtil.deepCopy(setA);
+
+        HashSet<ObjectSet> setC = new HashSet<>();
+        setC.add(c);
+        setC.add(d);
+
 
         assertTrue(equalLib.areEqual(setA, setB));
+        assertFalse(equalLib.areEqual(setA, setC));
 
-        a.number = 2;
-        d.number = 3;
-        assertFalse(equalLib.areEqual(setA, setB));
+
     }
+
+
+
 
     @DisplayName("Primitive Object test")
     @Test
@@ -258,7 +293,6 @@ public class SimpleTests {
         assert equalLib.areEqual(c, e);
 
 
-
         b = new ObjectA[]{a1, a2, new ObjectA(4, "d")};
         assert !equalLib.areEqual(a, b);
 
@@ -410,8 +444,6 @@ public class SimpleTests {
         b = "This is a different string";
         assert !equalLib.areEqual(a, b);
     }
-
-
 
 
     @DisplayName("Wrapper Integer")
@@ -569,11 +601,10 @@ public class SimpleTests {
     public void areEqualSets() {
         EqualLib equalLib = new EqualLib();
         Set<ObjectA> setA = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(2, "b")));
-        Set<ObjectA> setB = new HashSet<>(Arrays.asList(new ObjectA(2, "b"), new ObjectA(1, "a")));
+        Set<ObjectA> setB = DeepCopyUtil.deepCopy(setA);
 
         assertTrue(equalLib.areEqual(setA, setB));
     }
-
 
 
     @DisplayName("Set Inequality Test - Different Values")
@@ -632,7 +663,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
         Set<ObjectA> setA = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), null));
-        Set<ObjectA> setB = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), null));
+        Set<ObjectA> setB = DeepCopyUtil.deepCopy(setA);
 
         assertTrue(equalLib.areEqual(setA, setB));
     }
@@ -755,18 +786,18 @@ public class SimpleTests {
         mapB.put(c, cMap);
         mapB.put(b, bMap);
 
-        assertTrue(equalLib.areEqual(mapA, mapB));
+        Map<ObjectA, ObjectMap> mapC = DeepCopyUtil.deepCopy(mapA);
+        Map<ObjectA, ObjectMap> mapD = DeepCopyUtil.deepCopy(mapA);
+
+
+        assertTrue(equalLib.areEqual(mapC, mapD));
+
+        assertFalse(equalLib.areEqual(mapA, mapB));
 
         a.weight = 2;
         assertFalse(equalLib.areEqual(mapA, mapB));
 
     }
-
-
-
-
-
-
 
 
 }

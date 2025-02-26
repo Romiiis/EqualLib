@@ -1,6 +1,5 @@
 package com.romiis.complexTests;
 
-import javax.print.attribute.standard.PrinterMakeAndModel;
 import java.util.*;
 
 class Address {
@@ -54,18 +53,5 @@ class University {
 record personLists(List<Person> list1, List<Person> list2) {
 }
 
-class GraphNode {
-    String value;
-    List<GraphNode> neighbors;
 
-    public GraphNode(String value) {
-        this.value = value;
-        this.neighbors = new ArrayList<>();
-    }
-
-    // Metoda pro přidání souseda
-    public void addNeighbor(GraphNode neighbor) {
-        neighbors.add(neighbor);
-    }
-}
 
