@@ -1,6 +1,6 @@
 package com.romiis.complexTests;
 
-import com.romiis.EqualLib;
+import com.romiis.core.EqualLib;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -296,24 +296,24 @@ public class ComplexTests {
 
     @Test
     public void testGraphs() {
-        GraphNode root1 = RandomCyclicGraphGenerator.generateCyclicGraph(10);
-        GraphNode root2 = RandomCyclicGraphGenerator.copyGraph(root1);
+        GraphNode root1 = TestGraphGenerator.generateCyclicGraph(10);
+        GraphNode root2 = TestGraphGenerator.copyGraph(root1);
 
 
 
         assertTrue(equalLib.areEqual(root1, root2), "Graphs should be equal");
 
 
-        root1 = RandomCyclicGraphGenerator.generateCyclicGraph(10_000);
-        root2 = RandomCyclicGraphGenerator.copyGraphIterative(root1);
+        root1 = TestGraphGenerator.generateCyclicGraph(10_000);
+        root2 = TestGraphGenerator.copyGraphIterative(root1);
 
         long start = System.currentTimeMillis();
         assertTrue(equalLib.areEqual(root1, root2), "Big graphs should be equal");
         System.out.println("Time to compare big graphs: " + (System.currentTimeMillis() - start) + " ms");
 
 
-        root1 = RandomCyclicGraphGenerator.generateCyclicGraph(10000);
-        root2 = RandomCyclicGraphGenerator.generateCyclicGraph(10000);
+        root1 = TestGraphGenerator.generateCyclicGraph(10000);
+        root2 = TestGraphGenerator.generateCyclicGraph(10000);
 
         assertFalse(equalLib.areEqual(root1, root2), "Graphs should not be equal");
 

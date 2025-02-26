@@ -1,9 +1,12 @@
-package com.romiis;
+package com.romiis.core;
 
-import java.lang.reflect.AccessibleObject;
+import com.romiis.util.Pair;
+import com.romiis.util.ReflectionUtil;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
+
 
 
 /**
@@ -65,6 +68,11 @@ public class EqualLib implements IEqualLib {
             // If the pair is null, continue (it is like they are equal)
             if (pair.a() == null && pair.b() == null) {
                 continue;
+            }
+
+            if (pair.a() == null || pair.b() == null) {
+                System.out.println("One of the objects is null");
+                return false;
             }
 
             // If the pair is already visited, continue
@@ -163,8 +171,8 @@ public class EqualLib implements IEqualLib {
     private boolean compareFields(Object a, Object b, Queue<Pair> queue) {
 
         // Get all declared fields of the objects
-        Field[] fieldsA = getFields(a.getClass());
-        Field[] fieldsB = getFields(b.getClass());
+        Field[] fieldsA = ReflectionUtil.getFields(a.getClass());
+        Field[] fieldsB = ReflectionUtil.getFields(b.getClass());
 
         // Check if the number of fields is equal
         // TODO - This will be problematic for inheritance
@@ -195,7 +203,6 @@ public class EqualLib implements IEqualLib {
                 }
 
 
-
                 if (valueA == null || valueB == null) {
                     System.out.println("Field: " + fieldA.getName() + " is null");
                     return false;
@@ -203,7 +210,7 @@ public class EqualLib implements IEqualLib {
 
                 if (valueA.getClass().isPrimitive() || isWrapperOrString(valueA.getClass())) {
                     if (!compareWrapperOrString(valueA, valueB)) {
-                        System.out.println("Field: " + fieldA.getName() + " is not equal");
+                        System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
                         return false;
                     }
                 } else {
@@ -252,7 +259,6 @@ public class EqualLib implements IEqualLib {
      * @param queue   Queue of objects to compare for Algorithm
      * @param visited List of visited pairs (when null, new list is created)
      * @return true if the sets are equal, false otherwise
-     *
      * @hidden
      */
     public boolean compareSets(Set<?> set1, Set<?> set2, Queue<Pair> queue, List<Pair> visited) {
@@ -292,7 +298,6 @@ public class EqualLib implements IEqualLib {
      * @param queue   Queue of objects to compare for Algorithm
      * @param visited List of visited pairs (when null, new list is created)
      * @return true if the maps are equal, false otherwise
-     *
      * @hidden
      */
     private boolean compareMaps(Map<?, ?> mapA, Map<?, ?> mapB, Queue<Pair> queue, List<Pair> visited) {
@@ -356,7 +361,7 @@ public class EqualLib implements IEqualLib {
      */
     private Field findMatching(Field fieldA, Field[] fieldsB) {
         for (Field fieldB : fieldsB) {
-            if (fieldA.getName().equals(fieldB.getName())) {
+            if (fieldA.equals(fieldB)) {
                 return fieldB;
             }
         }
@@ -395,18 +400,7 @@ public class EqualLib implements IEqualLib {
     }
 
 
-    /**
-     * Get all fields from a class (including private fields)
-     */
-    private Field[] getFields(Class<?> clazz) {
-        Field[] fields = clazz.getDeclaredFields();
-        // Set all fields as accessible
-        AccessibleObject.setAccessible(fields, true);
-        for (Field field : fields) {
-            field.setAccessible(true);
-        }
-        return fields;
-    }
+
 
 
 }

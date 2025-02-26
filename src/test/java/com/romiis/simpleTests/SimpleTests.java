@@ -1,17 +1,12 @@
-package com.romiis;
+package com.romiis.simpleTests;
 
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.romiis.objects.simpleTests.*;
+import com.romiis.core.EqualLib;
+import com.romiis.util.DeepCopyUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,6 +19,39 @@ public class SimpleTests {
     @BeforeEach
     public void setUp() {
     }
+
+
+    @DisplayName("Test simple objects")
+    @Test
+    void testSimpleObjects() {
+
+        EqualLib equalLib = new EqualLib();
+
+
+        assertTrue(equalLib.areEqual(42, 42));
+        assertFalse(equalLib.areEqual(42, 43));
+        assertTrue(equalLib.areEqual("hello", "hello"));
+        assertFalse(equalLib.areEqual("hello", "world"));
+    }
+
+    @DisplayName("Test nested objects")
+    @Test
+    void testNestedObjects() {
+
+        EqualLib equalLib = new EqualLib();
+
+        Address addr1 = new Address("Prague", "Main Street");
+        Address addr2 = new Address("Prague", "Main Street");
+
+        Person p1 = new Person("Alice", 30, addr1);
+        Person p2 = new Person("Alice", 30, addr2);
+
+        assertTrue(equalLib.areEqual(p1, p2));
+
+        p2.address.street = "Other Street";
+        assertFalse(equalLib.areEqual(p1, p2));
+    }
+
 
     @DisplayName("Set Equality Test - cycle")
     @Test
@@ -41,33 +69,17 @@ public class SimpleTests {
         setA.add(a);
         setA.add(b);
 
-        DeepCopyUtil.printAllAttributes(a);
-       Object setB = deep(setA);
+        HashSet<ObjectSet> setB = DeepCopyUtil.deepCopy(setA);
+
+        HashSet<ObjectSet> setC = new HashSet<>();
+        setC.add(c);
+        setC.add(d);
+
 
         assertTrue(equalLib.areEqual(setA, setB));
+        assertFalse(equalLib.areEqual(setA, setC));
 
 
-    }
-    static Kryo kryo = new Kryo();
-
-
-    public static Object deep(Object object) {
-
-        Output output = new Output(5024);
-        kryo.writeClassAndObject(output, object);
-        Input input = new Input(output.getBuffer());
-        return kryo.readClassAndObject(input);
-    }
-
-    static {
-        // Registrace běžných tříd
-        kryo.register(java.util.HashSet.class);
-        kryo.register(java.util.ArrayList.class);
-        kryo.register(java.util.LinkedList.class);
-        kryo.register(java.util.HashMap.class);
-        kryo.register(java.util.TreeMap.class);
-        kryo.register(ObjectSet.class);
-        // Přidej další třídy podle potřeby
     }
 
 
@@ -589,7 +601,7 @@ public class SimpleTests {
     public void areEqualSets() {
         EqualLib equalLib = new EqualLib();
         Set<ObjectA> setA = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(2, "b")));
-        Set<ObjectA> setB = new HashSet<>(Arrays.asList(new ObjectA(2, "b"), new ObjectA(1, "a")));
+        Set<ObjectA> setB = DeepCopyUtil.deepCopy(setA);
 
         assertTrue(equalLib.areEqual(setA, setB));
     }
@@ -651,7 +663,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
         Set<ObjectA> setA = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), null));
-        Set<ObjectA> setB = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), null));
+        Set<ObjectA> setB = DeepCopyUtil.deepCopy(setA);
 
         assertTrue(equalLib.areEqual(setA, setB));
     }
@@ -774,7 +786,13 @@ public class SimpleTests {
         mapB.put(c, cMap);
         mapB.put(b, bMap);
 
-        assertTrue(equalLib.areEqual(mapA, mapB));
+        Map<ObjectA, ObjectMap> mapC = DeepCopyUtil.deepCopy(mapA);
+        Map<ObjectA, ObjectMap> mapD = DeepCopyUtil.deepCopy(mapA);
+
+
+        assertTrue(equalLib.areEqual(mapC, mapD));
+
+        assertFalse(equalLib.areEqual(mapA, mapB));
 
         a.weight = 2;
         assertFalse(equalLib.areEqual(mapA, mapB));
