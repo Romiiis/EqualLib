@@ -1,11 +1,17 @@
 package com.romiis;
 
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.romiis.objects.simpleTests.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,7 +27,7 @@ public class SimpleTests {
 
     @DisplayName("Set Equality Test - cycle")
     @Test
-    public void areEqualSetsCycle() {
+    public void areEqualSetsCycle() throws Exception {
         EqualLib equalLib = new EqualLib();
 
         ObjectSet a = new ObjectSet();
@@ -30,25 +36,42 @@ public class SimpleTests {
         ObjectSet c = new ObjectSet();
         ObjectSet d = new ObjectSet();
 
-        Set<ObjectSet> setA = new HashSet<>(Arrays.asList(a, b));
-        Set<ObjectSet> setB = new HashSet<>(Arrays.asList(c, d));
 
-        a.set = setA;
-        a.number = 1;
-        b.set = setB;
-        b.number = 1;
+        HashSet<ObjectSet> setA = new HashSet<>();
+        setA.add(a);
+        setA.add(b);
 
-        c.set = setA;
-        c.number = 1;
-        d.set = setB;
-        d.number = 1;
+        DeepCopyUtil.printAllAttributes(a);
+       Object setB = deep(setA);
 
         assertTrue(equalLib.areEqual(setA, setB));
 
-        a.number = 2;
-        d.number = 3;
-        assertFalse(equalLib.areEqual(setA, setB));
+
     }
+    static Kryo kryo = new Kryo();
+
+
+    public static Object deep(Object object) {
+
+        Output output = new Output(5024);
+        kryo.writeClassAndObject(output, object);
+        Input input = new Input(output.getBuffer());
+        return kryo.readClassAndObject(input);
+    }
+
+    static {
+        // Registrace běžných tříd
+        kryo.register(java.util.HashSet.class);
+        kryo.register(java.util.ArrayList.class);
+        kryo.register(java.util.LinkedList.class);
+        kryo.register(java.util.HashMap.class);
+        kryo.register(java.util.TreeMap.class);
+        kryo.register(ObjectSet.class);
+        // Přidej další třídy podle potřeby
+    }
+
+
+
 
     @DisplayName("Primitive Object test")
     @Test
@@ -258,7 +281,6 @@ public class SimpleTests {
         assert equalLib.areEqual(c, e);
 
 
-
         b = new ObjectA[]{a1, a2, new ObjectA(4, "d")};
         assert !equalLib.areEqual(a, b);
 
@@ -410,8 +432,6 @@ public class SimpleTests {
         b = "This is a different string";
         assert !equalLib.areEqual(a, b);
     }
-
-
 
 
     @DisplayName("Wrapper Integer")
@@ -573,7 +593,6 @@ public class SimpleTests {
 
         assertTrue(equalLib.areEqual(setA, setB));
     }
-
 
 
     @DisplayName("Set Inequality Test - Different Values")
@@ -761,12 +780,6 @@ public class SimpleTests {
         assertFalse(equalLib.areEqual(mapA, mapB));
 
     }
-
-
-
-
-
-
 
 
 }

@@ -115,6 +115,7 @@ public class EqualLib implements IEqualLib {
         // TODO - INHERITANCE
         if (!obj1.getClass().equals(obj2.getClass())) {
             if (!isAnonymousClass(obj1, obj2)) {
+                System.out.println("Types are not equal");
                 return false;
             }
         }
@@ -129,27 +130,10 @@ public class EqualLib implements IEqualLib {
             return compareWrapperOrString(obj1, obj2);
 
         } else if (type.isArray()) {
-
             // Arrays => Compare arrays index by index
             return compareArray(obj1, obj2, queue);
-
-        } else if (List.class.isAssignableFrom(type)) {
-            // List => Similar to arrays, compare lists index by index
-            return compareList((List<?>) obj1, (List<?>) obj2, queue);
-
-        } else if (Map.class.isAssignableFrom(type)) {
-
-            // Maps => Compare maps key by key
-            return compareMaps((Map<?, ?>) obj1, (Map<?, ?>) obj2, queue, visited);
-
-        } else if (Set.class.isAssignableFrom(type)) {
-
-            // Sets => Compare sets element by element
-            return compareSets((Set<?>) obj1, (Set<?>) obj2, queue, visited);
-
         } else {
-
-            // Objects => Compare fields of the objects
+            // Objects => Compare fields of the objects (Default collections also)
             return compareFields(obj1, obj2, queue);
 
         }
@@ -185,6 +169,7 @@ public class EqualLib implements IEqualLib {
         // Check if the number of fields is equal
         // TODO - This will be problematic for inheritance
         if (fieldsA.length != fieldsB.length) {
+            System.out.println("Number of fields is not equal");
             return false;
         }
 
@@ -196,6 +181,7 @@ public class EqualLib implements IEqualLib {
 
             // If no matching field is found, the objects are not equal
             if (fieldB == null) {
+                System.out.println("Field: " + fieldA.getName() + " not found in the second object");
                 return false;
             }
 
@@ -204,16 +190,20 @@ public class EqualLib implements IEqualLib {
                 Object valueA = fieldA.get(a);
                 Object valueB = fieldB.get(b);
 
-                if (valueA == null && valueB == null) {
+                if (valueA == valueB) {
                     continue;
                 }
 
+
+
                 if (valueA == null || valueB == null) {
+                    System.out.println("Field: " + fieldA.getName() + " is null");
                     return false;
                 }
 
                 if (valueA.getClass().isPrimitive() || isWrapperOrString(valueA.getClass())) {
                     if (!compareWrapperOrString(valueA, valueB)) {
+                        System.out.println("Field: " + fieldA.getName() + " is not equal");
                         return false;
                     }
                 } else {
@@ -223,7 +213,9 @@ public class EqualLib implements IEqualLib {
 
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
+                System.out.println("Error while accessing field: " + fieldA.getName());
                 return false;
+
             }
         }
 
@@ -260,6 +252,8 @@ public class EqualLib implements IEqualLib {
      * @param queue   Queue of objects to compare for Algorithm
      * @param visited List of visited pairs (when null, new list is created)
      * @return true if the sets are equal, false otherwise
+     *
+     * @hidden
      */
     public boolean compareSets(Set<?> set1, Set<?> set2, Queue<Pair> queue, List<Pair> visited) {
         if (set1.size() != set2.size()) {
@@ -298,6 +292,8 @@ public class EqualLib implements IEqualLib {
      * @param queue   Queue of objects to compare for Algorithm
      * @param visited List of visited pairs (when null, new list is created)
      * @return true if the maps are equal, false otherwise
+     *
+     * @hidden
      */
     private boolean compareMaps(Map<?, ?> mapA, Map<?, ?> mapB, Queue<Pair> queue, List<Pair> visited) {
         if (mapA.size() != mapB.size()) {
