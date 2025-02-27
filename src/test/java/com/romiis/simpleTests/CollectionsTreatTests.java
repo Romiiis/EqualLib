@@ -2,7 +2,6 @@ package com.romiis.simpleTests;
 
 import com.romiis.core.EqualLib;
 import com.romiis.core.EqualLibConfig;
-import com.romiis.util.DeepCopyUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +15,14 @@ public class CollectionsTreatTests {
     @DisplayName("Test arrays")
     @Test
     void testCollections() {
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
         List<Integer> list1 = Arrays.asList(1, 2, 3);
         List<Integer> list2 = Arrays.asList(1, 2, 3);
         List<Integer> list3 = Arrays.asList(3, 2, 1);
 
-        assertTrue(EqualLib.areEqual(list1, list2));
-        assertFalse(EqualLib.areEqual(list1, list3));
+        assertTrue(EqualLib.areEqual(list1, list2, config));
+        assertFalse(EqualLib.areEqual(list1, list3, config));
     }
 
     @DisplayName("Test sets")
@@ -30,10 +31,12 @@ public class CollectionsTreatTests {
         Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
         Set<String> set2 = new HashSet<>(Arrays.asList("C", "A", "B"));
 
-        assertTrue(EqualLib.areEqual(set1, set2)); // Pořadí by nemělo záležet
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
+        assertTrue(EqualLib.areEqual(set1, set2, config));
 
         set2.add("D");
-        assertFalse(EqualLib.areEqual(set1, set2));
+        assertFalse(EqualLib.areEqual(set1, set2, config));
     }
 
     @DisplayName("Test maps")
@@ -47,10 +50,13 @@ public class CollectionsTreatTests {
         map2.put("B", 2);
         map2.put("A", 1);
 
-        assertTrue(EqualLib.areEqual(map1, map2));
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
+
+        assertTrue(EqualLib.areEqual(map1, map2, config));
 
         map2.put("C", 3);
-        assertFalse(EqualLib.areEqual(map1, map2));
+        assertFalse(EqualLib.areEqual(map1, map2, config));
     }
 
     @DisplayName("Test maps with objects")
@@ -66,6 +72,10 @@ public class CollectionsTreatTests {
         map2.put(p2, "Developer");
 
         EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(false);
+
+        assertFalse(EqualLib.areEqual(map1, map2, config));
+
         config.setCompareByElementsAndKeys(true);
 
         assertTrue(EqualLib.areEqual(map1, map2, config));
@@ -78,13 +88,16 @@ public class CollectionsTreatTests {
         Node node1 = new Node(1);
         Node node2 = new Node(1);
 
-        node1.setNext(node1); // Cyklická reference
+        node1.setNext(node1);
         node2.setNext(node2);
 
-        assertTrue(EqualLib.areEqual(node1, node2)); // Musí zvládnout cykly bez nekonečné rekurze
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
 
-        node2.setNext(new Node(2)); // Změna reference
-        assertFalse(EqualLib.areEqual(node1, node2));
+        assertTrue(EqualLib.areEqual(node1, node2, config));
+
+        node2.setNext(new Node(2));
+        assertFalse(EqualLib.areEqual(node1, node2, config));
     }
 
     @DisplayName("Test deeply nested structures")
@@ -94,15 +107,18 @@ public class CollectionsTreatTests {
         Person p2 = new Person("Bob", 25, new Address("Brno", "Second Street"));
 
         p1.addFriend(p2);
-        p2.addFriend(p1); // Cyklický vztah mezi osobami
+        p2.addFriend(p1);
 
         Person p3 = new Person("Alice", 30, new Address("Prague", "Main Street"));
         Person p4 = new Person("Bob", 25, new Address("Brno", "Second Street"));
 
         p3.addFriend(p4);
-        p4.addFriend(p3); // Cyklický vztah, ale jiná instance
+        p4.addFriend(p3);
 
-        assertTrue(EqualLib.areEqual(p1, p3)); // Správná implementace by měla vrátit true
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
+
+        assertTrue(EqualLib.areEqual(p1, p3, config));
     }
 
     @DisplayName("Test deeply nested maps and lists")
@@ -123,10 +139,13 @@ public class CollectionsTreatTests {
         nestedMap2.put("second", list2);
         complexMap2.put("level1", nestedMap2);
 
-        assertTrue(EqualLib.areEqual(complexMap1, complexMap2));
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
+
+        assertTrue(EqualLib.areEqual(complexMap1, complexMap2, config));
 
         nestedMap2.put("third", Arrays.asList(7, 8, 9)); // Modify one part of the map
-        assertFalse(EqualLib.areEqual(complexMap1, complexMap2));
+        assertFalse(EqualLib.areEqual(complexMap1, complexMap2, config));
     }
 
     @DisplayName("Test cyclic graph with multiple nodes")
@@ -149,10 +168,17 @@ public class CollectionsTreatTests {
         node5.setNext(node6);
         node6.setNext(node4); // Same cycle as node1 -> node2 -> node3
 
-        assertTrue(EqualLib.areEqual(node1, node4)); // Identical cycle structure, should be true
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
+
+
+
+        assertTrue(EqualLib.areEqual(node1, node4, config)); // Identical cycle structure, should be true
+
 
         node6.setNext(new Node(4)); // Modify one node in the cycle
-        assertFalse(EqualLib.areEqual(node1, node4)); // Should return false
+
+        assertFalse(EqualLib.areEqual(node1, node4, config)); // Should return false
     }
 
     @DisplayName("Test objects with mutable and immutable fields")
@@ -165,10 +191,16 @@ public class CollectionsTreatTests {
         Person p1 = new Person("John", 40, addr1);
         Person p2 = new Person("John", 40, addr2);
 
-        assertTrue(EqualLib.areEqual(p1, p2)); // Same values, should be true
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
+
+        assertTrue(EqualLib.areEqual(p1, p2, config)); // Should return true because the fields are the same
+
 
         p2.setAge(41); // Changing a mutable field
-        assertFalse(EqualLib.areEqual(p1, p2)); // Should be false because age is different
+
+        assertFalse(EqualLib.areEqual(p1, p2, config)); // Should return false because age is different
+
     }
 
     @DisplayName("Test complex objects with anonymous classes")
@@ -179,9 +211,18 @@ public class CollectionsTreatTests {
             int a = 5;
             String name = "Test";
         };
-        Object obj2 = DeepCopyUtil.deepCopy(obj1); // Deep copy of the object
 
-        assertTrue(EqualLib.areEqual(obj1, obj2)); // Should return true since the fields are the same
+        Object obj2 = new Object() {
+            int a = 5;
+            String name = "Test";
+        };
+
+
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true).setDebugMode(true);
+
+
+        assertTrue(EqualLib.areEqual(obj1, obj2, config)); // Should return true since the fields are the same
 
         Object obj3 = new Object() {
             int a = 5;
@@ -213,6 +254,9 @@ public class CollectionsTreatTests {
         Map<String, List<Person>> map2 = new HashMap<>();
         map2.put("friends", list2);
 
-        assertTrue(EqualLib.areEqual(map1, map2)); // Same nested structures, should return true
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
+
+        assertTrue(EqualLib.areEqual(map1, map2, config)); // Same nested structures, should return true
     }
 }

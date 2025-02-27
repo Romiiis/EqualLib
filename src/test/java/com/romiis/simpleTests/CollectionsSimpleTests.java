@@ -1,7 +1,7 @@
 package com.romiis.simpleTests;
 
 import com.romiis.core.EqualLib;
-import com.romiis.util.DeepCopyUtil;
+import com.romiis.DeepCopyUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ public class CollectionsSimpleTests {
         List<Integer> list3 = Arrays.asList(3, 2, 1);
 
         assertTrue(EqualLib.areEqual(list1, list2));
-        assertFalse(EqualLib.areEqual(list1, list3)); // Pořadí záleží
+        assertFalse(EqualLib.areEqual(list1, list3));
     }
 
     @DisplayName("Test sets")
@@ -28,7 +28,7 @@ public class CollectionsSimpleTests {
         Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
         Set<String> set2 = new HashSet<>(Arrays.asList("C", "A", "B"));
 
-        assertTrue(EqualLib.areEqual(set1, set2)); // Pořadí by nemělo záležet
+        assertTrue(EqualLib.areEqual(set1, set2));
 
         set2.add("D");
         assertFalse(EqualLib.areEqual(set1, set2));

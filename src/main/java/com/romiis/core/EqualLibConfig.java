@@ -1,6 +1,5 @@
 package com.romiis.core;
 
-import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +11,7 @@ import java.util.Set;
  * including settings for ignored fields, classes, packages, and comparison depth.
  * </p>
  */
-@Getter
+
 public class EqualLibConfig {
 
     /**
@@ -28,12 +27,7 @@ public class EqualLibConfig {
     /**
      * The classes to ignore during the comparison.
      */
-    private Set<Class<?>> ignoredClasses = new HashSet<>();
-
-    /**
-     * The packages to ignore during the comparison.
-     */
-    private Set<String> ignoredPackages = new HashSet<>();
+    private Set<String> useCustomEquals = new HashSet<>();
 
     /**
      * Whether to use the equals method after the max depth is reached.
@@ -49,6 +43,11 @@ public class EqualLibConfig {
      * Whether to treat collections as objects.
      */
     private boolean compareByElementsAndKeys = false;
+
+    /**
+     * Whether to print debug information.
+     */
+    private boolean debugMode = false;
 
     /**
      * Sets the maximum depth for comparison.
@@ -100,31 +99,14 @@ public class EqualLibConfig {
      * meaning all fields within such classes will be skipped.
      * </p>
      *
-     * @param ignoredClasses The classes that should be excluded from the comparison.
+     * @param packagesAndClasses The classes or packages in which the custom equals method should be used instead of the DeepEquals.
      * @return The updated configuration object.
      */
-    public EqualLibConfig setIgnoredClasses(Class<?>... ignoredClasses) {
-        this.ignoredClasses = Set.of(ignoredClasses);
+    public EqualLibConfig setUseCustomEqualsIn(String ... packagesAndClasses) {
+        this.useCustomEquals = Set.of(packagesAndClasses);
         return this;
     }
 
-    /**
-     * Specifies the packages to ignore during the comparison.
-     * <p>
-     * If a package is listed here, all classes within that package will be ignored during the comparison.
-     * The package names must be provided in the standard format, e.g., "com.example.package".
-     * </p>
-     * <p>
-     * BE CAREFUL: The package names are case-sensitive.
-     * </p>
-     *
-     * @param ignoredPackages The package names that should be excluded from the comparison.
-     * @return The updated configuration object.
-     */
-    public EqualLibConfig setIgnoredPackages(String... ignoredPackages) {
-        this.ignoredPackages = Set.of(ignoredPackages);
-        return this;
-    }
 
     /**
      * Sets whether inheritance should be included in the comparison.
@@ -156,5 +138,52 @@ public class EqualLibConfig {
     public EqualLibConfig setCompareByElementsAndKeys(boolean compareByElementsAndKeys) {
         this.compareByElementsAndKeys = compareByElementsAndKeys;
         return this;
+    }
+
+    /**
+     * Sets the debug mode for the comparison.
+     * <p>
+     * If set to {@code true}, the comparison will print debug information to the console.
+     * This information includes the fields being compared and the result of the comparison.
+     * </p>
+     *
+     * @param debugMode {@code true} if debug information should be printed, {@code false} otherwise.
+     * @return The updated configuration object.
+     */
+    public EqualLibConfig setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+        return this;
+    }
+
+
+
+
+
+    public int getMaxDepth() {
+        return maxDepth;
+    }
+
+    public Set<String> getIgnoredFields() {
+        return ignoredFields;
+    }
+
+    public Set<String> getUseCustomEquals() {
+        return useCustomEquals;
+    }
+
+    public boolean isUseEqualsAfterMaxDepth() {
+        return useEqualsAfterMaxDepth;
+    }
+
+    public boolean isCompareInheritance() {
+        return compareInheritance;
+    }
+
+    public boolean isCompareByElementsAndKeys() {
+        return compareByElementsAndKeys;
+    }
+
+    public boolean isDebugMode() {
+        return debugMode;
     }
 }

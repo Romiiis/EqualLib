@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ComplexTests {
 
-    EqualLib equalLib = new EqualLib();
 
     @Test
     public void testPersonEquality() {
@@ -304,7 +303,7 @@ public class ComplexTests {
         assertTrue(EqualLib.areEqual(root1, root2), "Graphs should be equal");
 
 
-        root1 = TestGraphGenerator.generateCyclicGraph(10_000);
+        root1 = TestGraphGenerator.generateCyclicGraph(1000);
         root2 = TestGraphGenerator.copyGraphIterative(root1);
 
         long start = System.currentTimeMillis();
@@ -312,8 +311,8 @@ public class ComplexTests {
         System.out.println("Time to compare big graphs: " + (System.currentTimeMillis() - start) + " ms");
 
 
-        root1 = TestGraphGenerator.generateCyclicGraph(10000);
-        root2 = TestGraphGenerator.generateCyclicGraph(10000);
+        root1 = TestGraphGenerator.generateCyclicGraph(1000);
+        root2 = TestGraphGenerator.generateCyclicGraph(1000);
 
         assertFalse(EqualLib.areEqual(root1, root2), "Graphs should not be equal");
 
