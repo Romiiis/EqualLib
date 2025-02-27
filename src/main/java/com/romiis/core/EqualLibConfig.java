@@ -48,7 +48,7 @@ public class EqualLibConfig {
     /**
      * Whether to treat collections as objects.
      */
-    private boolean treatCollectionsAsObjects = false;
+    private boolean compareByElementsAndKeys = false;
 
     /**
      * Sets the maximum depth for comparison.
@@ -149,12 +149,12 @@ public class EqualLibConfig {
      * collections will be compared element by element, without considering their internal structure.
      * </p>
      *
-     * @param treatCollectionsAsObjects If {@code true}, collections are compared as objects.
+     * @param compareByElementsAndKeys If {@code true}, collections are compared as objects.
      *                                  If {@code false}, their elements are compared separately.
      * @return The updated configuration object.
      */
-    public EqualLibConfig setTreatCollectionsAsObjects(boolean treatCollectionsAsObjects) {
-        this.treatCollectionsAsObjects = treatCollectionsAsObjects;
+    public EqualLibConfig setCompareByElementsAndKeys(boolean compareByElementsAndKeys) {
+        this.compareByElementsAndKeys = compareByElementsAndKeys;
         return this;
     }
 }

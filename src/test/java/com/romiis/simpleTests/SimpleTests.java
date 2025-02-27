@@ -24,14 +24,10 @@ public class SimpleTests {
     @DisplayName("Test simple objects")
     @Test
     void testSimpleObjects() {
-
-        EqualLib equalLib = new EqualLib();
-
-
-        assertTrue(equalLib.areEqual(42, 42));
-        assertFalse(equalLib.areEqual(42, 43));
-        assertTrue(equalLib.areEqual("hello", "hello"));
-        assertFalse(equalLib.areEqual("hello", "world"));
+        assertTrue(EqualLib.areEqual(42, 42));
+        assertFalse(EqualLib.areEqual(42, 43));
+        assertTrue(EqualLib.areEqual("hello", "hello"));
+        assertFalse(EqualLib.areEqual("hello", "world"));
     }
 
     @DisplayName("Test nested objects")
@@ -46,10 +42,10 @@ public class SimpleTests {
         Person p1 = new Person("Alice", 30, addr1);
         Person p2 = new Person("Alice", 30, addr2);
 
-        assertTrue(equalLib.areEqual(p1, p2));
+        assertTrue(EqualLib.areEqual(p1, p2));
 
         p2.address.street = "Other Street";
-        assertFalse(equalLib.areEqual(p1, p2));
+        assertFalse(EqualLib.areEqual(p1, p2));
     }
 
 
@@ -76,8 +72,8 @@ public class SimpleTests {
         setC.add(d);
 
 
-        assertTrue(equalLib.areEqual(setA, setB));
-        assertFalse(equalLib.areEqual(setA, setC));
+        assertTrue(EqualLib.areEqual(setA, setB));
+        assertFalse(EqualLib.areEqual(setA, setC));
 
 
     }
@@ -93,7 +89,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
     }
 
 
@@ -104,7 +100,7 @@ public class SimpleTests {
         ObjectA b = new ObjectA(1, "a");
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
     }
 
 
@@ -115,7 +111,7 @@ public class SimpleTests {
         ObjectA b = new ObjectA(2, "b");
         EqualLib equalLib = new EqualLib();
 
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Two objects structure - same reference")
@@ -128,7 +124,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Two objects structure - different reference - same values")
@@ -142,7 +138,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Two objects structure - different reference - different values")
@@ -156,7 +152,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Cyclic reference - same references")
@@ -175,7 +171,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(c1, c4);
+        assert EqualLib.areEqual(c1, c4);
 
 
     }
@@ -201,7 +197,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(c1, c4);
+        assert EqualLib.areEqual(c1, c4);
 
 
     }
@@ -227,7 +223,7 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert !equalLib.areEqual(c1, c4);
+        assert !EqualLib.areEqual(c1, c4);
 
 
     }
@@ -240,10 +236,10 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         b = new int[]{1, 2, 4};
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Object arrays")
@@ -258,10 +254,10 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         b = new ObjectA[]{a1, a2, new ObjectA(4, "d")};
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Object arrays - complex structure")
@@ -288,16 +284,16 @@ public class SimpleTests {
 
         EqualLib equalLib = new EqualLib();
 
-        assert equalLib.areEqual(a, b);
-        assert equalLib.areEqual(c, d);
-        assert equalLib.areEqual(c, e);
+        assert EqualLib.areEqual(a, b);
+        assert EqualLib.areEqual(c, d);
+        assert EqualLib.areEqual(c, e);
 
 
         b = new ObjectA[]{a1, a2, new ObjectA(4, "d")};
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
 
         d = new ObjectB[]{b1, b2, new ObjectB("d", new ObjectA(4, "d"))};
-        assert !equalLib.areEqual(c, d);
+        assert !EqualLib.areEqual(c, d);
     }
 
     @DisplayName("Primitive int")
@@ -309,11 +305,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
 
@@ -326,11 +322,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Primitive float")
@@ -342,11 +338,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2.0f;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Primitive double")
@@ -358,11 +354,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2.0;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Primitive char")
@@ -374,11 +370,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 'b';
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Primitive byte")
@@ -390,11 +386,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Primitive short")
@@ -406,11 +402,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Primitive boolean")
@@ -422,11 +418,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = false;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("String comparison")
@@ -438,11 +434,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = "This is a different string";
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
 
@@ -455,11 +451,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Wrapper Long")
@@ -471,11 +467,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2L;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
 
@@ -488,11 +484,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2.0f;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
 
@@ -505,11 +501,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2.0;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Wrapper Character")
@@ -521,11 +517,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 'b';
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Wrapper Byte")
@@ -537,11 +533,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Wrapper Short")
@@ -553,11 +549,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = 2;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("Wrapper Boolean")
@@ -569,11 +565,11 @@ public class SimpleTests {
         EqualLib equalLib = new EqualLib();
 
         // a and b are equal
-        assert equalLib.areEqual(a, b);
+        assert EqualLib.areEqual(a, b);
 
         // a and b are not equal
         b = false;
-        assert !equalLib.areEqual(a, b);
+        assert !EqualLib.areEqual(a, b);
     }
 
     @DisplayName("List Equality Test - Same Values")
@@ -583,7 +579,7 @@ public class SimpleTests {
         List<ObjectA> listA = new ArrayList<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(2, "b")));
         List<ObjectA> listB = new ArrayList<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(2, "b")));
 
-        assertTrue(equalLib.areEqual(listA, listB));
+        assertTrue(EqualLib.areEqual(listA, listB));
     }
 
     @DisplayName("List Inequality Test - Different Values")
@@ -593,7 +589,7 @@ public class SimpleTests {
         List<ObjectA> listA = new ArrayList<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(2, "b")));
         List<ObjectA> listB = new ArrayList<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(3, "c")));
 
-        assertFalse(equalLib.areEqual(listA, listB));
+        assertFalse(EqualLib.areEqual(listA, listB));
     }
 
     @DisplayName("Set Equality Test - Same Values")
@@ -603,7 +599,7 @@ public class SimpleTests {
         Set<ObjectA> setA = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(2, "b")));
         Set<ObjectA> setB = DeepCopyUtil.deepCopy(setA);
 
-        assertTrue(equalLib.areEqual(setA, setB));
+        assertTrue(EqualLib.areEqual(setA, setB));
     }
 
 
@@ -614,7 +610,7 @@ public class SimpleTests {
         Set<ObjectA> setA = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(2, "b")));
         Set<ObjectA> setB = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), new ObjectA(3, "c")));
 
-        assertFalse(equalLib.areEqual(setA, setB));
+        assertFalse(EqualLib.areEqual(setA, setB));
     }
 
     @DisplayName("Map Equality Test - Same Key-Value Pairs")
@@ -629,7 +625,7 @@ public class SimpleTests {
         mapB.put("key1", new ObjectA(1, "a"));
         mapB.put("key2", new ObjectA(2, "b"));
 
-        assertTrue(equalLib.areEqual(mapA, mapB));
+        assertTrue(EqualLib.areEqual(mapA, mapB));
     }
 
     @DisplayName("Map Inequality Test - Different Key-Value Pairs")
@@ -644,7 +640,7 @@ public class SimpleTests {
         mapB.put("key1", new ObjectA(1, "a"));
         mapB.put("key2", new ObjectA(3, "c"));
 
-        assertFalse(equalLib.areEqual(mapA, mapB));
+        assertFalse(EqualLib.areEqual(mapA, mapB));
     }
 
     @DisplayName("List with Null Values")
@@ -654,7 +650,7 @@ public class SimpleTests {
         List<ObjectA> listA = new ArrayList<>(Arrays.asList(new ObjectA(1, "a"), null));
         List<ObjectA> listB = new ArrayList<>(Arrays.asList(new ObjectA(1, "a"), null));
 
-        assertTrue(equalLib.areEqual(listA, listB));
+        assertTrue(EqualLib.areEqual(listA, listB));
     }
 
     @DisplayName("Set with Null Values")
@@ -665,7 +661,7 @@ public class SimpleTests {
         Set<ObjectA> setA = new HashSet<>(Arrays.asList(new ObjectA(1, "a"), null));
         Set<ObjectA> setB = DeepCopyUtil.deepCopy(setA);
 
-        assertTrue(equalLib.areEqual(setA, setB));
+        assertTrue(EqualLib.areEqual(setA, setB));
     }
 
     @DisplayName("Map with Null Values")
@@ -680,14 +676,14 @@ public class SimpleTests {
         mapB.put("key1", new ObjectA(1, "a"));
         mapB.put("key2", null);
 
-        assertTrue(equalLib.areEqual(mapA, mapB));
+        assertTrue(EqualLib.areEqual(mapA, mapB));
     }
 
     @DisplayName("Compare null values")
     @Test
     public void areEqualNullValues() {
         EqualLib equalLib = new EqualLib();
-        assertTrue(equalLib.areEqual(null, null));
+        assertTrue(EqualLib.areEqual(null, null));
     }
 
     @DisplayName("Cyclic list")
@@ -716,10 +712,10 @@ public class SimpleTests {
         listB.add(c);
         listB.add(b);
 
-        assertTrue(equalLib.areEqual(listA, listB));
+        assertTrue(EqualLib.areEqual(listA, listB));
 
         a.number = 2;
-        assertFalse(equalLib.areEqual(listA, listB));
+        assertFalse(EqualLib.areEqual(listA, listB));
 
     }
 
@@ -750,10 +746,10 @@ public class SimpleTests {
         mapB.put("a", c);
         mapB.put("b", b);
 
-        assertTrue(equalLib.areEqual(mapA, mapB));
+        assertTrue(EqualLib.areEqual(mapA, mapB));
 
         a.number = 2;
-        assertFalse(equalLib.areEqual(mapA, mapB));
+        assertFalse(EqualLib.areEqual(mapA, mapB));
     }
 
     @DisplayName("Map with cyclic reference 2 Object key")
@@ -790,12 +786,12 @@ public class SimpleTests {
         Map<ObjectA, ObjectMap> mapD = DeepCopyUtil.deepCopy(mapA);
 
 
-        assertTrue(equalLib.areEqual(mapC, mapD));
+        assertTrue(EqualLib.areEqual(mapC, mapD));
 
-        assertFalse(equalLib.areEqual(mapA, mapB));
+        assertFalse(EqualLib.areEqual(mapA, mapB));
 
         a.weight = 2;
-        assertFalse(equalLib.areEqual(mapA, mapB));
+        assertFalse(EqualLib.areEqual(mapA, mapB));
 
     }
 

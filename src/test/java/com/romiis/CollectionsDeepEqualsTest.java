@@ -26,10 +26,10 @@ public class CollectionsDeepEqualsTest {
         list2.add("B");
         list2.add("C");
 
-        assertTrue(deepEquals.areEqual(list1, list2));
+        assertTrue(EqualLib.areEqual(list1, list2));
 
         list2.remove("C");
-        assertFalse(deepEquals.areEqual(list1, list2));
+        assertFalse(EqualLib.areEqual(list1, list2));
     }
 
     @DisplayName("Test LinkedList (List) with deepEquals")
@@ -45,10 +45,10 @@ public class CollectionsDeepEqualsTest {
         list2.add("B");
         list2.add("C");
 
-        assertTrue(deepEquals.areEqual(list1, list2));
+        assertTrue(EqualLib.areEqual(list1, list2));
 
         list2.remove("C");
-        assertFalse(deepEquals.areEqual(list1, list2));
+        assertFalse(EqualLib.areEqual(list1, list2));
     }
 
     @DisplayName("Test HashSet (Set) with deepEquals")
@@ -57,10 +57,10 @@ public class CollectionsDeepEqualsTest {
         Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
         Set<String> set2 = new HashSet<>(Arrays.asList("C", "A", "B"));
 
-        assertTrue(deepEquals.areEqual(set1, set2)); // HashSet nemění pořadí, ale hodnoty jsou stejné
+        assertTrue(EqualLib.areEqual(set1, set2)); // HashSet nemění pořadí, ale hodnoty jsou stejné
 
         set2.add("D");
-        assertFalse(deepEquals.areEqual(set1, set2)); // D se přidalo, takže rozdíl
+        assertFalse(EqualLib.areEqual(set1, set2)); // D se přidalo, takže rozdíl
     }
 
     @DisplayName("Test LinkedHashSet (Set) with deepEquals")
@@ -69,10 +69,10 @@ public class CollectionsDeepEqualsTest {
         LinkedHashSet<String> set1 = new LinkedHashSet<>(Arrays.asList("A", "B", "C"));
         LinkedHashSet<String> set2 = DeepCopyUtil.deepCopy(set1);
 
-        assertTrue(deepEquals.areEqual(set1, set2)); // Pořadí by mělo být stejné
+        assertTrue(EqualLib.areEqual(set1, set2)); // Pořadí by mělo být stejné
 
         set2.remove("C");
-        assertFalse(deepEquals.areEqual(set1, set2)); // Po změně rozdíl
+        assertFalse(EqualLib.areEqual(set1, set2)); // Po změně rozdíl
     }
 
     @DisplayName("Test TreeSet (Set) with deepEquals")
@@ -81,7 +81,7 @@ public class CollectionsDeepEqualsTest {
         Set<Integer> set1 = new TreeSet<>(Arrays.asList(1, 3, 5));
         Set<Integer> set2 = new TreeSet<>(Arrays.asList(5, 1, 3));
 
-        assertTrue(deepEquals.areEqual(set1, set2)); // TreeSet by měl mít stejné prvky a v pořadí 1, 3, 5
+        assertTrue(EqualLib.areEqual(set1, set2)); // TreeSet by měl mít stejné prvky a v pořadí 1, 3, 5
     }
 
     @DisplayName("Test HashMap (Map) with deepEquals")
@@ -95,10 +95,10 @@ public class CollectionsDeepEqualsTest {
         map2.put("B", 2);
         map2.put("A", 1);
 
-        assertTrue(deepEquals.areEqual(map1, map2)); // HashMap nezáleží na pořadí klíčů
+        assertTrue(EqualLib.areEqual(map1, map2)); // HashMap nezáleží na pořadí klíčů
 
         map2.put("C", 3);
-        assertFalse(deepEquals.areEqual(map1, map2)); // "C" byla přidána
+        assertFalse(EqualLib.areEqual(map1, map2)); // "C" byla přidána
     }
 
     @DisplayName("Test LinkedHashMap (Map) with deepEquals")
@@ -112,10 +112,10 @@ public class CollectionsDeepEqualsTest {
         map2.put("A", 1);
         map2.put("B", 2);
 
-        assertTrue(deepEquals.areEqual(map1, map2)); // Pořadí klíčů je zachováno
+        assertTrue(EqualLib.areEqual(map1, map2)); // Pořadí klíčů je zachováno
 
         map2.put("C", 3);
-        assertFalse(deepEquals.areEqual(map1, map2)); // "C" byla přidána
+        assertFalse(EqualLib.areEqual(map1, map2)); // "C" byla přidána
     }
 
     @DisplayName("Test TreeMap (Map) with deepEquals")
@@ -131,12 +131,12 @@ public class CollectionsDeepEqualsTest {
 
         Map<Integer, String> map3 = DeepCopyUtil.deepCopy(map1);
 
-        assertTrue(deepEquals.areEqual(map1, map3)); //
+        assertTrue(EqualLib.areEqual(map1, map3)); //
 
-        assertFalse(deepEquals.areEqual(map1, map2)); // TreeMap by měl být seřazen
+        assertFalse(EqualLib.areEqual(map1, map2)); // TreeMap by měl být seřazen
 
         map2.put(3, "C");
-        assertFalse(deepEquals.areEqual(map1, map2)); // "3" byla přidána
+        assertFalse(EqualLib.areEqual(map1, map2)); // "3" byla přidána
     }
 
     @DisplayName("Test PriorityQueue (Queue) with deepEquals")
@@ -158,13 +158,13 @@ public class CollectionsDeepEqualsTest {
         Collections.sort(list1);
         Collections.sort(list2);
 
-        assertTrue(deepEquals.areEqual(list1, list2)); // Compare sorted lists
+        assertTrue(EqualLib.areEqual(list1, list2)); // Compare sorted lists
 
         queue2.poll();
         list2 = new ArrayList<>(queue2);
         Collections.sort(list2);
 
-        assertFalse(deepEquals.areEqual(list1, list2)); // After polling, the lists should differ
+        assertFalse(EqualLib.areEqual(list1, list2)); // After polling, the lists should differ
     }
 
     @DisplayName("Test LinkedList as Queue with deepEquals")
@@ -180,10 +180,10 @@ public class CollectionsDeepEqualsTest {
         queue2.add("B");
         queue2.add("C");
 
-        assertTrue(deepEquals.areEqual(queue1, queue2)); // Obě fronty mají stejné prvky
+        assertTrue(EqualLib.areEqual(queue1, queue2)); // Obě fronty mají stejné prvky
 
         queue2.poll();
-        assertFalse(deepEquals.areEqual(queue1, queue2)); // Po vyjmutí prvku jsou fronty různé
+        assertFalse(EqualLib.areEqual(queue1, queue2)); // Po vyjmutí prvku jsou fronty různé
     }
 
     // TODO - DEQUE and PRIORITIZED QUEUE - problem with modules (open with argument --add-opens java.base/java.util=ALL-UNNAMED )
@@ -204,12 +204,12 @@ public class CollectionsDeepEqualsTest {
         List<String> list1 = new ArrayList<>(deque1);
         List<String> list2 = new ArrayList<>(deque2);
 
-        assertTrue(deepEquals.areEqual(list1, list2)); // Compare based on content
+        assertTrue(EqualLib.areEqual(list1, list2)); // Compare based on content
 
         deque2.removeFirst();
         list2 = new ArrayList<>(deque2);
 
-        assertFalse(deepEquals.areEqual(list1, list2)); // After removal, the lists should differ
+        assertFalse(EqualLib.areEqual(list1, list2)); // After removal, the lists should differ
     }
 
     @DisplayName("Test Stack (LIFO) with deepEquals")
@@ -225,10 +225,10 @@ public class CollectionsDeepEqualsTest {
         stack2.push("B");
         stack2.push("C");
 
-        assertTrue(deepEquals.areEqual(stack1, stack2)); // Obě zásobníky mají stejné prvky
+        assertTrue(EqualLib.areEqual(stack1, stack2)); // Obě zásobníky mají stejné prvky
 
         stack2.pop();
-        assertFalse(deepEquals.areEqual(stack1, stack2)); // Po popnutí jsou zásobníky různé
+        assertFalse(EqualLib.areEqual(stack1, stack2)); // Po popnutí jsou zásobníky různé
     }
 }
 

@@ -1,6 +1,7 @@
 package com.romiis.simpleTests;
 
 import com.romiis.core.EqualLib;
+import com.romiis.core.EqualLibConfig;
 import com.romiis.util.DeepCopyUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,8 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CollectionsSimpleTests {
+public class CollectionsTreatTests {
+
     @DisplayName("Test arrays")
     @Test
     void testCollections() {
@@ -19,7 +21,7 @@ public class CollectionsSimpleTests {
         List<Integer> list3 = Arrays.asList(3, 2, 1);
 
         assertTrue(EqualLib.areEqual(list1, list2));
-        assertFalse(EqualLib.areEqual(list1, list3)); // Pořadí záleží
+        assertFalse(EqualLib.areEqual(list1, list3));
     }
 
     @DisplayName("Test sets")
@@ -60,18 +62,13 @@ public class CollectionsSimpleTests {
         Map<Person, String> map1 = new HashMap<>();
         map1.put(p1, "Developer");
 
-        Map<Person, String> map2 = DeepCopyUtil.deepCopy(map1); // Deep copy of the map
-        map2.put(p2, "Tester");
+        Map<Person, String> map2 = new HashMap<>();
+        map2.put(p2, "Developer");
 
-        assertFalse(EqualLib.areEqual(map1, map2));
+        EqualLibConfig config = new EqualLibConfig();
+        config.setCompareByElementsAndKeys(true);
 
-        map1 = DeepCopyUtil.deepCopy(map2); // Deep copy of the map
-
-        map2 = DeepCopyUtil.deepCopy(map1); // Deep copy of the map
-
-        assertTrue(EqualLib.areEqual(map1, map2));
-
-
+        assertTrue(EqualLib.areEqual(map1, map2, config));
 
     }
 

@@ -33,7 +33,7 @@ public class ComplexTests {
         person2.age = 30;
         person2.address = address2;
 
-        assertTrue(equalLib.areEqual(person1, person2), "Persons should be equal");
+        assertTrue(EqualLib.areEqual(person1, person2), "Persons should be equal");
         assertNotSame(person1, person2, "Person objects should not be the same instance");
     }
 
@@ -47,7 +47,7 @@ public class ComplexTests {
         p2.name = "Alice";
         p2.age = 26;
 
-        assertFalse(equalLib.areEqual(p1, p2), "Persons with different ages should not be equal");
+        assertFalse(EqualLib.areEqual(p1, p2), "Persons with different ages should not be equal");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ComplexTests {
         p2.age = 40;
         p2.address = null;
 
-        assertTrue(equalLib.areEqual(p1, p2), "Persons with null addresses should be equal");
+        assertTrue(EqualLib.areEqual(p1, p2), "Persons with null addresses should be equal");
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ComplexTests {
         List<String> list1 = Arrays.asList("A", "B", "C");
         List<String> list2 = Arrays.asList("C", "B", "A");
 
-        assertFalse(equalLib.areEqual(list1, list2), "Lists with different orders should not be equal");
+        assertFalse(EqualLib.areEqual(list1, list2), "Lists with different orders should not be equal");
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ComplexTests {
         Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
         Set<String> set2 = new HashSet<>(Arrays.asList("C", "B", "A"));
 
-        assertTrue(equalLib.areEqual(set1, set2), "Sets should be equal regardless of order");
+        assertTrue(EqualLib.areEqual(set1, set2), "Sets should be equal regardless of order");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ComplexTests {
         Person p1 = new Person();
         Person p2 = new Person();
 
-        assertTrue(equalLib.areEqual(p1, p2), "Two empty objects should be equal");
+        assertTrue(EqualLib.areEqual(p1, p2), "Two empty objects should be equal");
     }
 
 
@@ -100,13 +100,13 @@ public class ComplexTests {
         map2.put("B", 2);
         map2.put("A", 1);
 
-        assertTrue(equalLib.areEqual(map1, map2), "Maps with the same content should be equal");
+        assertTrue(EqualLib.areEqual(map1, map2), "Maps with the same content should be equal");
     }
 
     @Test
     public void testPrimitiveEquality() {
-        assertTrue(equalLib.areEqual(10, 10), "Two equal integers should be equal");
-        assertFalse(equalLib.areEqual(10, 20), "Different integers should not be equal");
+        assertTrue(EqualLib.areEqual(10, 10), "Two equal integers should be equal");
+        assertFalse(EqualLib.areEqual(10, 20), "Different integers should not be equal");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class ComplexTests {
         int[] array1 = {1, 2, 3};
         int[] array2 = {1, 2, 3};
 
-        assertTrue(equalLib.areEqual(array1, array2), "Arrays with same elements should be equal");
+        assertTrue(EqualLib.areEqual(array1, array2), "Arrays with same elements should be equal");
     }
 
     @Test
@@ -190,7 +190,7 @@ public class ComplexTests {
             university2.campuses.add("Campus " + i);
         }
 
-        assertTrue(equalLib.areEqual(university1, university2), "Big university should be equal");
+        assertTrue(EqualLib.areEqual(university1, university2), "Big university should be equal");
 
     }
 
@@ -268,7 +268,7 @@ public class ComplexTests {
             university2.campuses.add("Campus " + i);
         }
 
-        assertFalse(equalLib.areEqual(university1, university2), "Big university should not be equal");
+        assertFalse(EqualLib.areEqual(university1, university2), "Big university should not be equal");
 
     }
 
@@ -280,7 +280,7 @@ public class ComplexTests {
         System.out.println("Time to generate random persons: " + (System.currentTimeMillis() - start) + " ms");
 
         start = System.currentTimeMillis();
-        assertTrue(equalLib.areEqual(lists.list1(), lists.list2()), "Lists should be equal");
+        assertTrue(EqualLib.areEqual(lists.list1(), lists.list2()), "Lists should be equal");
         System.out.println("Time to compare lists: " + (System.currentTimeMillis() - start) + " ms");
 
         start = System.currentTimeMillis();
@@ -288,7 +288,7 @@ public class ComplexTests {
         System.out.println("Time to generate random persons: " + (System.currentTimeMillis() - start) + " ms");
 
         start = System.currentTimeMillis();
-        assertFalse(equalLib.areEqual(lists2.list1(), lists2.list2()), "Lists should not be equal");
+        assertFalse(EqualLib.areEqual(lists2.list1(), lists2.list2()), "Lists should not be equal");
         System.out.println("Time to compare lists: " + (System.currentTimeMillis() - start) + " ms");
 
 
@@ -301,21 +301,21 @@ public class ComplexTests {
 
 
 
-        assertTrue(equalLib.areEqual(root1, root2), "Graphs should be equal");
+        assertTrue(EqualLib.areEqual(root1, root2), "Graphs should be equal");
 
 
         root1 = TestGraphGenerator.generateCyclicGraph(10_000);
         root2 = TestGraphGenerator.copyGraphIterative(root1);
 
         long start = System.currentTimeMillis();
-        assertTrue(equalLib.areEqual(root1, root2), "Big graphs should be equal");
+        assertTrue(EqualLib.areEqual(root1, root2), "Big graphs should be equal");
         System.out.println("Time to compare big graphs: " + (System.currentTimeMillis() - start) + " ms");
 
 
         root1 = TestGraphGenerator.generateCyclicGraph(10000);
         root2 = TestGraphGenerator.generateCyclicGraph(10000);
 
-        assertFalse(equalLib.areEqual(root1, root2), "Graphs should not be equal");
+        assertFalse(EqualLib.areEqual(root1, root2), "Graphs should not be equal");
 
 
     }
