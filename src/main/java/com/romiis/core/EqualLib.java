@@ -1,8 +1,8 @@
 package com.romiis.core;
 
 import com.romiis.util.Pair;
-import com.romiis.util.ReflectionUtil;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -83,12 +83,12 @@ public class EqualLib {
             Pair pair = queue.poll();
 
             // If the pair is identical, continue (same reference)
-            if (Pair.identicalCheck(pair)) {
+            if (Pair.isIdentical(pair)) {
                 continue;
             }
 
             // If one of the objects is null, return false
-            if (Pair.nullCheck(pair)) {
+            if (Pair.isNullPresent(pair)) {
                 if (config.isDebugMode()) System.out.println("One of the objects is null");
                 return false;
             }
@@ -141,17 +141,25 @@ public class EqualLib {
     private static boolean compareObject(Pair pairToCompare, Queue<Pair> queue, List<Pair> visited, EqualLibConfig config) {
 
         // Type check
-        Class<?> type = Pair.typeCheck(pairToCompare);
+        Class<?> type = Pair.getCommonType(pairToCompare, config.isEquivalenceByInheritance());
 
         // There is no class to compare not found
         if (type == null) {
 
+
             // If it is not the anonymous class, return false
-            type = Pair.isAnonymousClass(pairToCompare);
+            type = Pair.getAnonymousClassType(pairToCompare);
 
             // If it is not the anonymous class, return false
             if (type == null) {
-                if (config.isDebugMode()) System.out.println("Class not found");
+
+                if (config.isDebugMode()) {
+                    if (config.isEquivalenceByInheritance())
+                        System.out.println("No common superclass found for pair: " + pairToCompare);
+
+                    else System.out.println("No class found for pair: " + pairToCompare);
+                }
+
                 return false;
             }
 
@@ -159,6 +167,16 @@ public class EqualLib {
 
 
         boolean result;
+
+        if (isUseCustomEquals(type, config)) {
+            if (!pairToCompare.getFirst().equals(pairToCompare.getSecond())) {
+                if (config.isDebugMode()) System.out.println("Custom equals method returned false");
+                return false;
+            }
+            return true;
+        }
+
+
         // Decide what to do based on the type
         if (type.isPrimitive() || isWrapperOrString(type)) {
             result = compareWrapperOrString(pairToCompare);
@@ -174,12 +192,11 @@ public class EqualLib {
                 result = compareCollectionOrMap(pairToCompare, queue, visited, config);
             } else {
                 // If the objects are not collections or maps, compare the fields of the objects
-                result = compareFields(pairToCompare, queue, config);
+                result = compareFields(pairToCompare, queue, config, type);
 
             }
 
         }
-
 
         if (config.isDebugMode()) System.out.println("Pair: " + pairToCompare + " is equal: " + result);
         return result;
@@ -191,18 +208,26 @@ public class EqualLib {
      * If algorithm determines that the objects are objects, it compares the fields of the objects
      *
      * @param pairToCompare Pair of objects to compare
-     * @param queue Queue of objects to compare for Algorithm
+     * @param queue         Queue of objects to compare for Algorithm
      * @return true if the fields are equal, false otherwise
      */
-    private static boolean compareFields(Pair pairToCompare, Queue<Pair> queue, EqualLibConfig config) {
+    private static boolean compareFields(Pair pairToCompare, Queue<Pair> queue, EqualLibConfig config, Class<?> type) {
 
         // Get the fields of the objects
-        Field[] fieldsA = ReflectionUtil.getFields(pairToCompare.getObjA().getClass());
-        Field[] fieldsB = ReflectionUtil.getFields(pairToCompare.getObjB().getClass());
+        Field[] fieldsA, fieldsB;
+
+
+        if (type.isAnonymousClass()) {
+            fieldsA = getFields(pairToCompare.getFirst().getClass());
+            fieldsB = getFields(pairToCompare.getSecond().getClass());
+
+        } else {
+            fieldsA = getFields(type);
+            fieldsB = getFields(type);
+        }
 
 
         // Check if the number of fields is equal
-        // TODO - This will be problematic for inheritance
         if (fieldsA.length != fieldsB.length) {
             if (config.isDebugMode()) System.out.println("Number of fields is not equal");
             return false;
@@ -212,7 +237,7 @@ public class EqualLib {
         for (Field fieldA : fieldsA) {
 
             // Find the matching field in the second object
-            Field fieldB = findMatching(fieldA, fieldsB, pairToCompare.getObjA().getClass().isAnonymousClass());
+            Field fieldB = findMatching(fieldA, fieldsB, pairToCompare.getFirst().getClass().isAnonymousClass());
 
             // If no matching field is found, the objects are not equal
             if (fieldB == null) {
@@ -220,10 +245,14 @@ public class EqualLib {
                 return false;
             }
 
+            if (!config.getIgnoredFields().isEmpty() && isIgnoredField(type, fieldA, config)) {
+                continue;
+            }
+
             try {
                 // Get the values of the fields
-                Object valueA = fieldA.get(pairToCompare.getObjA());
-                Object valueB = fieldB.get(pairToCompare.getObjB());
+                Object valueA = fieldA.get(pairToCompare.getFirst());
+                Object valueB = fieldB.get(pairToCompare.getSecond());
 
                 if (valueA == valueB) {
                     continue;
@@ -231,18 +260,22 @@ public class EqualLib {
 
 
                 if (valueA == null || valueB == null) {
-                    if (config.isDebugMode()) System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
+                    if (config.isDebugMode())
+                        System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
                     return false;
                 }
+
 
                 if (valueA.getClass().isPrimitive() || isWrapperOrString(valueA.getClass())) {
 
                     if (!compareWrapperOrString(new Pair(valueA, valueB))) {
-                        if (config.isDebugMode()) System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
+                        if (config.isDebugMode())
+                            System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
                         return false;
                     }
 
-                    if (config.isDebugMode()) System.out.println("Field: " + fieldA.getName() + " is equal " + valueA + " " + valueB);
+                    if (config.isDebugMode())
+                        System.out.println("Field: " + fieldA.getName() + " is equal " + valueA + " " + valueB);
 
                 } else {
                     queue.add(new Pair(valueA, valueB, pairToCompare.getDepth() + 1));
@@ -261,6 +294,44 @@ public class EqualLib {
 
 
     /**
+     * Check if the field is in the ignored fields
+     *
+     * @param clazz  Class of the object
+     * @param field  Field to check
+     * @param config Configuration for the comparison
+     * @return true if the field is ignored, false otherwise
+     */
+    private static boolean isIgnoredField(Class<?> clazz, Field field, EqualLibConfig config) {
+        String fieldName = field.getName();
+        String fullFieldName = clazz.getName() + "." + fieldName;
+
+        return config.getIgnoredFields().contains(fullFieldName);
+    }
+
+    /**
+     * Check if the class or package is in useCustomEquals
+     *
+     * @param clazz  Class to check
+     * @param config Configuration for the comparison
+     * @return true if the class is in useCustomEquals, false otherwise
+     */
+    private static boolean isUseCustomEquals(Class<?> clazz, EqualLibConfig config) {
+        // Get the class name (with package)
+        String className = clazz.getName();
+
+        // Split the class name by the dot (.) and loop through the parts and check if the class or package is in the useCustomEquals
+        String path = "";
+        for (String part : className.split("\\.")) {
+            path += part;
+            if (config.getUseCustomEquals().contains(path)) {
+                return true;
+            }
+            path += ".";
+        }
+        return false;
+    }
+
+    /**
      * Compare two arrays index by index (expanding the object tree)
      *
      * @param queue Queue of objects to compare for Algorithm
@@ -269,8 +340,8 @@ public class EqualLib {
     private static boolean compareArray(Pair pair, Queue<Pair> queue) {
 
         // Unwrap the pair
-        Object a = pair.getObjA();
-        Object b = pair.getObjB();
+        Object a = pair.getFirst();
+        Object b = pair.getSecond();
 
 
         // Check if the arrays have the same length
@@ -292,8 +363,8 @@ public class EqualLib {
     /**
      * Find a matching field in the second object
      *
-     * @param fieldA  Field from the first object
-     * @param fieldsB Fields from the second object
+     * @param fieldA         Field from the first object
+     * @param fieldsB        Fields from the second object
      * @param anonymousClass If the class is anonymous field, the last $number is removed from the name
      * @return The matching field or null if no matching field is found
      */
@@ -315,7 +386,6 @@ public class EqualLib {
         }
         return null;
     }
-
 
 
     /**
@@ -343,8 +413,8 @@ public class EqualLib {
      * @return - true if the objects are equal, false otherwise
      */
     private static boolean compareWrapperOrString(Pair pair) {
-        Object objA = pair.getObjA();
-        Object objB = pair.getObjB();
+        Object objA = pair.getFirst();
+        Object objB = pair.getSecond();
 
         return objA.equals(objB);
     }
@@ -369,13 +439,13 @@ public class EqualLib {
      * Compare two collections of any type.
      *
      * @param pairToCompare Pair of collections to compare
-     * @param queue   Queue of objects to compare for Algorithm
-     * @param visited List of visited pairs
+     * @param queue         Queue of objects to compare for Algorithm
+     * @param visited       List of visited pairs
      * @return true if the collections are equal, false otherwise
      */
     private static boolean compareCollectionOrMap(Pair pairToCompare, Queue<Pair> queue, List<Pair> visited, EqualLibConfig config) {
-        Object obj1 = pairToCompare.getObjA();
-        Object obj2 = pairToCompare.getObjB();
+        Object obj1 = pairToCompare.getFirst();
+        Object obj2 = pairToCompare.getSecond();
 
         // Check if the collections are null
         if (obj1 == null || obj2 == null) {
@@ -406,14 +476,14 @@ public class EqualLib {
      * Compare two lists index by index (expanding the object tree)
      *
      * @param listsToCompare Pair of lists to compare
-     * @param queue Queue of objects to compare for Algorithm
+     * @param queue          Queue of objects to compare for Algorithm
      * @return true if the lists are equal, false otherwise
      */
     private static boolean compareList(Pair listsToCompare, Queue<Pair> queue) {
 
         // Get the lists
-        List<?> listA = (List<?>) listsToCompare.getObjA();
-        List<?> listB = (List<?>) listsToCompare.getObjB();
+        List<?> listA = (List<?>) listsToCompare.getFirst();
+        List<?> listB = (List<?>) listsToCompare.getSecond();
 
         // Check if the lists have the same size
         if (listA.size() != listB.size()) {
@@ -438,15 +508,15 @@ public class EqualLib {
      * Compare two sets element by element (recursive call for objects)
      *
      * @param setsToCompare Pair of sets to compare
-     * @param visited List of visited pairs (when null, new list is created)
+     * @param visited       List of visited pairs (when null, new list is created)
      * @return true if the sets are equal, false otherwise
      * @hidden
      */
     private static boolean compareSets(Pair setsToCompare, Queue<Pair> queue, List<Pair> visited, EqualLibConfig config) {
 
         // Get the sets
-        Set<?> set1 = (Set<?>) setsToCompare.getObjA();
-        Set<?> set2 = (Set<?>) setsToCompare.getObjB();
+        Set<?> set1 = (Set<?>) setsToCompare.getFirst();
+        Set<?> set2 = (Set<?>) setsToCompare.getSecond();
 
         // Check if the sets have the same size
         if (set1.size() != set2.size()) {
@@ -495,8 +565,8 @@ public class EqualLib {
     private static boolean compareMaps(Pair mapsToCompare, Queue<Pair> queue, List<Pair> visited, EqualLibConfig config) {
 
         // Get the maps
-        Map<?, ?> mapA = (Map<?, ?>) mapsToCompare.getObjA();
-        Map<?, ?> mapB = (Map<?, ?>) mapsToCompare.getObjB();
+        Map<?, ?> mapA = (Map<?, ?>) mapsToCompare.getFirst();
+        Map<?, ?> mapB = (Map<?, ?>) mapsToCompare.getSecond();
 
         // Check if the maps have the same size
         if (mapA.size() != mapB.size()) {
@@ -530,6 +600,49 @@ public class EqualLib {
         }
 
         return true;
+    }
+
+
+    /**
+     * Get all fields from a class (including private fields)
+     *
+     * @param clazz       - the class to get the fields from
+     * @param finalParent - the final parent class where the fields should be taken from (included)
+     */
+    private static Field[] getFields(Class<?> clazz, Class<?> finalParent) {
+
+        List<Field> fields = new ArrayList<>();
+
+        // If the final parent is null, set it to Object.class (the highest parent)
+        if (finalParent == null) {
+            finalParent = Object.class;
+        }
+
+        // Get all fields from the class and its superclasses
+        while (clazz != null) {
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+            clazz = clazz.getSuperclass();
+
+            // If the class is the final parent, break the loop (Superclass of Object.class is null)
+            if (clazz == null || clazz.equals(finalParent)) {
+                break;
+            }
+        }
+
+        // Set the fields to accessible
+        Field[] fieldArray = fields.toArray(new Field[0]);
+        AccessibleObject.setAccessible(fieldArray, true);
+        return fieldArray;
+    }
+
+
+    /**
+     * Get all fields from a class (including private fields)
+     *
+     * @param clazz - the class to get the fields from
+     */
+    private static Field[] getFields(Class<?> clazz) {
+        return getFields(clazz, null);
     }
 
 

@@ -37,7 +37,7 @@ public class EqualLibConfig {
     /**
      * Whether to compare inherited fields.
      */
-    private boolean compareInheritance = true;
+    private boolean equivalenceByInheritance = false;
 
     /**
      * Whether to treat collections as objects.
@@ -84,7 +84,7 @@ public class EqualLibConfig {
      * BE CAREFUL: The field names are case-sensitive.
      * </p>
      *
-     * @param ignoredFields Fully qualified field names to ignore during comparison.
+     * @param ignoredFields Fully qualified field names with class and package. Example: "com.example.data.Person.name"
      * @return The updated configuration object.
      */
     public EqualLibConfig setIgnoredFields(String... ignoredFields) {
@@ -93,7 +93,7 @@ public class EqualLibConfig {
     }
 
     /**
-     * Specifies the classes to ignore during the comparison.
+     * Specifies the classes or packages in which the custom equals method should be used instead of the DeepEquals.
      * <p>
      * If a class is listed here, instances of that class will be excluded from comparison,
      * meaning all fields within such classes will be skipped.
@@ -102,7 +102,7 @@ public class EqualLibConfig {
      * @param packagesAndClasses The classes or packages in which the custom equals method should be used instead of the DeepEquals.
      * @return The updated configuration object.
      */
-    public EqualLibConfig setUseCustomEqualsIn(String ... packagesAndClasses) {
+    public EqualLibConfig setUseCustomEqualsIn(String... packagesAndClasses) {
         this.useCustomEquals = Set.of(packagesAndClasses);
         return this;
     }
@@ -111,15 +111,15 @@ public class EqualLibConfig {
     /**
      * Sets whether inheritance should be included in the comparison.
      * <p>
-     * If set to {@code true}, fields declared in superclasses will be included in the comparison process.
-     * Otherwise, only fields declared in the actual class of the compared objects will be checked.
+     * If set to {@code true}, for equality of two objects, only fields in superclass will be compared.
+     * If set to {@code false}, Every field in the object will be compared.
      * </p>
      *
-     * @param compareInheritance {@code true} if inherited fields should be included, {@code false} otherwise.
+     * @param compareInheritance {@code true} superclass attributes enough for equality, {@code false} every field in the object should be compared.
      * @return The updated configuration object.
      */
-    public EqualLibConfig setCompareInheritance(boolean compareInheritance) {
-        this.compareInheritance = compareInheritance;
+    public EqualLibConfig equivalenceByInheritance(boolean compareInheritance) {
+        this.equivalenceByInheritance = compareInheritance;
         return this;
     }
 
@@ -132,7 +132,7 @@ public class EqualLibConfig {
      * </p>
      *
      * @param compareByElementsAndKeys If {@code true}, collections are compared as objects.
-     *                                  If {@code false}, their elements are compared separately.
+     *                                 If {@code false}, their elements are compared separately.
      * @return The updated configuration object.
      */
     public EqualLibConfig setCompareByElementsAndKeys(boolean compareByElementsAndKeys) {
@@ -156,33 +156,66 @@ public class EqualLibConfig {
     }
 
 
-
-
-
+    /**
+     * Gets the maximal depth of the comparison.
+     *
+     * @return The maximal depth of the comparison.
+     */
     public int getMaxDepth() {
         return maxDepth;
     }
 
+    /**
+     * Gets the fields to ignore during the comparison.
+     *
+     * @return The fields to ignore during the comparison.
+     */
     public Set<String> getIgnoredFields() {
         return ignoredFields;
     }
 
+    /**
+     * Gets the classes to ignore during the comparison.
+     *
+     * @return The classes to ignore during the comparison.
+     */
     public Set<String> getUseCustomEquals() {
         return useCustomEquals;
     }
 
+    /**
+     * Gets whether to use the equals method after the max depth is reached.
+     *
+     * @return {@code true} if the equals method is used after the max depth is reached, {@code false} otherwise.
+     */
     public boolean isUseEqualsAfterMaxDepth() {
         return useEqualsAfterMaxDepth;
     }
 
-    public boolean isCompareInheritance() {
-        return compareInheritance;
+    /**
+     * Gets whether to compare inherited fields.
+     *
+     * @return {@code true} if inherited fields are compared, {@code false} otherwise.
+     */
+    public boolean isEquivalenceByInheritance() {
+        return equivalenceByInheritance;
     }
 
+    /**
+     * Gets whether to treat collections as objects.
+     *
+     * @return {@code true} if collections are treated as objects, {@code false} otherwise.
+     */
     public boolean isCompareByElementsAndKeys() {
         return compareByElementsAndKeys;
     }
 
+
+    /**
+     * Gets whether the debug mode is enabled.
+     *
+     * @return {@code true} if the debug mode is enabled, {@code false} otherwise.
+     */
     public boolean isDebugMode() {
         return debugMode;
     }

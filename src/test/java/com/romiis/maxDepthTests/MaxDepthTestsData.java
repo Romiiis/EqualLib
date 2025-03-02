@@ -11,13 +11,23 @@ class Person {
         this.address = address;
     }
 
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Person other) {
+            return name.equals(other.name) && age == other.age && address.equals(other.address);
+        }
+        return false;
+    }
+
 }
 
 class Address {
     private String street;
-    private String city;
+    private City city;
 
-    public Address(String street, String city) {
+    public Address(String street, City city) {
         this.street = street;
         this.city = city;
     }
