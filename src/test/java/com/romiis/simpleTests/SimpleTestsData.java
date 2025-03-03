@@ -1,6 +1,5 @@
 package com.romiis.simpleTests;
 
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +47,15 @@ class ObjectList {
 
 class ObjectC {
     public String name;
-    @Setter
+
     public ObjectC next;
 
     public ObjectC(String name, ObjectC next) {
         this.name = name;
+        this.next = next;
+    }
+
+    public void setNext(ObjectC next) {
         this.next = next;
     }
 
@@ -94,8 +97,11 @@ class Address {
 
 class Node {
     int value;
-    @Setter
     Node next;
+
+    public void setNext(Node next) {
+        this.next = next;
+    }
 
     public Node(int value) {
         this.value = value;
@@ -105,7 +111,6 @@ class Node {
 
 class Person {
     String name;
-    @Setter
     int age;
     public Address address;
     List<Person> friends;
@@ -117,8 +122,17 @@ class Person {
         this.friends = new ArrayList<>();
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
     public void addFriend(Person friend) {
         this.friends.add(friend);
     }
 
 }
+
+enum Direction {
+    NORTH, SOUTH, EAST, WEST
+}
+
+

@@ -1,0 +1,38 @@
+package com.romiis.customEqualsTests;
+
+import com.romiis.core.EqualLib;
+import com.romiis.core.EqualLibConfig;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class customEqualsTests {
+
+    @Test
+    @DisplayName("Custom equals")
+    void test1() {
+
+
+        Person person1 = new Person("John", 30, new Address("Main St", new City("New York", 1000000, Country.USA)));
+        Person person2 = new Person("John", 30, new Address("Main St", new City("New York", 1000000, Country.USA)));
+
+        assertTrue(EqualLib.areEqual(person1, person2));
+
+        person2 = new Person("John", 105, new Address("Main St", new City("New York", 1000000, Country.UK)));
+        assertFalse(EqualLib.areEqual(person1, person2));
+
+        EqualLibConfig config = new EqualLibConfig();
+        config.setUseCustomEqualsIn("com.romiis.customEqualsTests");
+        assertTrue(EqualLib.areEqual(person1, person2, config));
+
+        config.setUseCustomEqualsIn("com.romiis");
+        assertTrue(EqualLib.areEqual(person1, person2, config));
+
+        config.setUseCustomEqualsIn("com.romiis.customEqualsTests.Person");
+        assertTrue(EqualLib.areEqual(person1, person2, config));
+
+
+    }
+}
