@@ -3,6 +3,7 @@ package com.romiis.inheritanceTests;
 import com.romiis.core.EqualLib;
 import com.romiis.core.EqualLibConfig;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -21,7 +22,6 @@ public class inheritanceTests {
         config.setCompareByElementsAndKeys(true);
     }
 
-    // ✅ 1. Test základního porovnání stejných objektů
     @Test
     void testEqualObjects() {
         String str1 = "Hello";
@@ -29,7 +29,6 @@ public class inheritanceTests {
         assertTrue(EqualLib.areEqual(str1, str2, config), "Identické řetězce by měly být shodné");
     }
 
-    // ✅ 2. Test rozdílných objektů
     @Test
     void testNotEqualObjects() {
         String str1 = "Hello";
@@ -37,7 +36,6 @@ public class inheritanceTests {
         assertFalse(EqualLib.areEqual(str1, str2, config), "Rozdílné řetězce by neměly být shodné");
     }
 
-    // ✅ 3. Test pro porovnání s dědičností (equivalenceByInheritance = true)
     @Test
     void testEqualityByInheritance() {
         Parent parent = new Parent();
@@ -48,7 +46,6 @@ public class inheritanceTests {
         assertTrue(EqualLib.areEqual(parent, child, config), "Dědičnost by měla stačit pro rovnost");
     }
 
-    // ✅ 4. Test pro porovnání s dědičností vypnutou (equivalenceByInheritance = false)
     @Test
     void testNotEqualByInheritance() {
         Parent parent = new Parent();
@@ -59,7 +56,6 @@ public class inheritanceTests {
         assertFalse(EqualLib.areEqual(parent, child, config), "Dědičnost nestačí, měly by se porovnávat i potomkovské atributy");
     }
 
-    // ✅ 5. Test porovnání dvou potomků stejného rodiče
     @Test
     void testTwoChildrenSameParent() {
         Child child1 = new Child();
@@ -70,7 +66,6 @@ public class inheritanceTests {
         assertTrue(EqualLib.areEqual(child1, child2, config), "Dva potomci stejného rodiče by měli být považováni za stejné při zapnuté dědičnosti");
     }
 
-    // ✅ 6. Test porovnání dvou rodičů s různými hodnotami
     @Test
     void testTwoParentsDifferentValues() {
         Parent parent1 = new Parent();
@@ -82,7 +77,6 @@ public class inheritanceTests {
         assertFalse(EqualLib.areEqual(parent1, parent2, config), "Rodiče s různými hodnotami by neměli být považováni za stejné");
     }
 
-    // ✅ 7. Test porovnání rodiče s jinou třídou
     @Test
     void testParentWithDifferentClass() {
         Parent parent = new Parent();
@@ -93,7 +87,6 @@ public class inheritanceTests {
         assertFalse(EqualLib.areEqual(parent, unrelated, config), "Rodič a zcela jiná třída by neměly být považovány za stejné");
     }
 
-    // ✅ 8. Test porovnání map (složitější struktura)
     @Test
     void testMapEquality() {
         Map<String, Integer> map1 = new HashMap<>();
@@ -108,7 +101,6 @@ public class inheritanceTests {
         assertTrue(EqualLib.areEqual(map1, map2, config), "Mapy se stejnými klíči a hodnotami by měly být shodné");
     }
 
-    // ✅ 9. Test porovnání map s různými hodnotami
     @Test
     void testMapNotEqual() {
         Map<String, Integer> map1 = new HashMap<>();
@@ -123,14 +115,27 @@ public class inheritanceTests {
         assertFalse(EqualLib.areEqual(map1, map2, config), "Mapy s rozdílnými hodnotami by neměly být shodné");
     }
 
-    // ✅ 10. Test porovnání null hodnot
     @Test
     void testNullEquality() {
         assertTrue(EqualLib.areEqual(null, null, config), "Dvě null hodnoty by měly být shodné");
         assertFalse(EqualLib.areEqual(null, "test", config), "Null a neprázdný objekt by neměly být shodné");
     }
 
-    // ✅ Statické třídy pro testování dědičnosti
+    @Test
+    @DisplayName("Test inheritance with different classes")
+    void carTests() {
+        Car sedan = new Sedan("Toyota", "Corolla", 2020, 5);
+        Car truck = new Truck("Toyota", "Corolla", 2020, 1000);
+
+        assertFalse(EqualLib.areEqual(sedan, truck, config), "Different classes should not be equal");
+
+        config.equivalenceByInheritance(true);
+
+        assertTrue(EqualLib.areEqual(sedan, truck, config), "Inherited fields should be equal");
+
+
+    }
+
     static class Parent {
         int value = 10;
     }
@@ -146,5 +151,40 @@ public class inheritanceTests {
     static class UnrelatedClass {
         int differentValue = 50;
     }
+
+    static abstract class Car {
+        String brand;
+        String model;
+        int year;
+
+        public Car(String brand, String model, int year) {
+            this.brand = brand;
+            this.model = model;
+            this.year = year;
+        }
+    }
+
+    static class Sedan extends Car {
+        int seats;
+
+        public Sedan(String brand, String model, int year, int seats) {
+            super(brand, model, year);
+            this.seats = seats;
+        }
+
+    }
+
+    static class Truck extends Car {
+        int loadCapacity;
+
+        public Truck(String brand, String model, int year, int loadCapacity) {
+            super(brand, model, year);
+            this.loadCapacity = loadCapacity;
+        }
+
+
+    }
+
+
 
 }
