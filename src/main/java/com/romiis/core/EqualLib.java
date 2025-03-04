@@ -304,7 +304,6 @@ public class EqualLib {
     private static boolean isIgnoredField(Class<?> clazz, Field field, EqualLibConfig config) {
         String fieldName = field.getName();
         String fullFieldName = clazz.getName() + "." + fieldName;
-
         return config.getIgnoredFields().contains(fullFieldName);
     }
 

@@ -73,14 +73,17 @@ public class Pair {
 
         if (equalitySuperclass) {
 
-            // Find the common superclass of the two objects
+            // Find the common superclass of the two objects (if both same type, return common parent)
             Class<?> superClass = null;
             for (Class<?> clazz = pair.first.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
+                if (clazz.equals(pair.second.getClass())) {
+                    continue;
+                }
                 if (clazz.isAssignableFrom(pair.second.getClass())) {
-                    if (clazz.equals(Object.class)) {
-                        break;
-                    }
                     superClass = clazz;
+                    if (superClass.equals(Object.class)) {
+                        return null;
+                    }
                     break;
                 }
             }
