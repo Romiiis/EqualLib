@@ -30,9 +30,13 @@ public class CollectionsDeepEqualsTest {
         list2.add("C");
 
         assertTrue(EqualLib.areEqual(list1, list2));
+        //symmetric
+        assertTrue(EqualLib.areEqual(list2, list1));
 
         list2.remove("C");
         assertFalse(EqualLib.areEqual(list1, list2));
+        //symmetric
+        assertFalse(EqualLib.areEqual(list2, list1));
     }
 
     @DisplayName("Test LinkedList (List) with deepEquals")
@@ -46,9 +50,11 @@ public class CollectionsDeepEqualsTest {
         List<String> list2 = DeepCopyUtil.deepCopy(list1);
 
         assertTrue(EqualLib.areEqual(list1, list2));
+        assertTrue(EqualLib.areEqual(list2, list1));
 
         list2.remove("C");
         assertFalse(EqualLib.areEqual(list1, list2));
+        assertFalse(EqualLib.areEqual(list2, list1));
     }
 
     @DisplayName("Test HashSet (Set) with deepEquals")
@@ -58,9 +64,13 @@ public class CollectionsDeepEqualsTest {
         Set<String> set2 = DeepCopyUtil.deepCopy(set1);
 
         assertTrue(EqualLib.areEqual(set1, set2));
+        //symmetric
+        assertTrue(EqualLib.areEqual(set2, set1));
 
         set2.add("D");
         assertFalse(EqualLib.areEqual(set1, set2));
+        //symmetric
+        assertFalse(EqualLib.areEqual(set2, set1));
     }
 
     @DisplayName("Test LinkedHashSet (Set) with deepEquals")
@@ -70,9 +80,11 @@ public class CollectionsDeepEqualsTest {
         LinkedHashSet<String> set2 = DeepCopyUtil.deepCopy(set1);
 
         assertTrue(EqualLib.areEqual(set1, set2));
+        assertTrue(EqualLib.areEqual(set2, set1));
 
         set2.remove("C");
         assertFalse(EqualLib.areEqual(set1, set2));
+        assertFalse(EqualLib.areEqual(set2, set1));
     }
 
     @DisplayName("Test TreeSet (Set) with deepEquals")
@@ -82,10 +94,12 @@ public class CollectionsDeepEqualsTest {
         Set<Integer> set2 = DeepCopyUtil.deepCopy(set1);
 
         assertTrue(EqualLib.areEqual(set1, set2));
+        assertTrue(EqualLib.areEqual(set2, set1));
 
         set2.add(4);
 
         assertFalse(EqualLib.areEqual(set1, set2));
+        assertFalse(EqualLib.areEqual(set2, set1));
     }
 
     @DisplayName("Test HashMap (Map) with deepEquals")
@@ -98,9 +112,11 @@ public class CollectionsDeepEqualsTest {
         Map<String, Integer> map2 = DeepCopyUtil.deepCopy(map1);
 
         assertTrue(EqualLib.areEqual(map1, map2));
+        assertTrue(EqualLib.areEqual(map2, map1));
 
         map2.put("C", 3);
         assertFalse(EqualLib.areEqual(map1, map2));
+        assertFalse(EqualLib.areEqual(map2, map1));
     }
 
     @DisplayName("Test LinkedHashMap (Map) with deepEquals")
@@ -112,9 +128,11 @@ public class CollectionsDeepEqualsTest {
 
         Map<String, Integer> map2 = DeepCopyUtil.deepCopy(map1);
         assertTrue(EqualLib.areEqual(map1, map2));
+        assertTrue(EqualLib.areEqual(map2, map1));
 
         map2.put("C", 3);
         assertFalse(EqualLib.areEqual(map1, map2));
+        assertFalse(EqualLib.areEqual(map2, map1));
     }
 
     @DisplayName("Test TreeMap (Map) with deepEquals")
@@ -127,9 +145,11 @@ public class CollectionsDeepEqualsTest {
         Map<Integer, String> map2 = DeepCopyUtil.deepCopy(map1);
 
         assertTrue(EqualLib.areEqual(map1, map2));
+        assertTrue(EqualLib.areEqual(map2, map1));
 
         map2.put(3, "C");
         assertFalse(EqualLib.areEqual(map1, map2));
+        assertFalse(EqualLib.areEqual(map2, map1));
     }
 
     @DisplayName("Test PriorityQueue (Queue) with deepEquals")
@@ -144,9 +164,11 @@ public class CollectionsDeepEqualsTest {
 
 
         assertTrue(EqualLib.areEqual(queue1, queue2));
+        assertTrue(EqualLib.areEqual(queue2, queue1));
 
         queue2.poll();
         assertFalse(EqualLib.areEqual(queue1, queue2));
+        assertFalse(EqualLib.areEqual(queue2, queue1));
     }
 
     @DisplayName("Test LinkedList as Queue with deepEquals")
@@ -160,9 +182,11 @@ public class CollectionsDeepEqualsTest {
         Queue<String> queue2 = DeepCopyUtil.deepCopy(queue1);
 
         assertTrue(EqualLib.areEqual(queue1, queue2));
+        assertTrue(EqualLib.areEqual(queue2, queue1));
 
         queue2.poll();
         assertFalse(EqualLib.areEqual(queue1, queue2));
+        assertFalse(EqualLib.areEqual(queue2, queue1));
     }
 
     // TODO - DEQUE and PRIORITIZED QUEUE - problem with modules (open with argument --add-opens java.base/java.util=ALL-UNNAMED )
@@ -178,10 +202,12 @@ public class CollectionsDeepEqualsTest {
 
 
         assertTrue(EqualLib.areEqual(deque1, deque2));
+        assertTrue(EqualLib.areEqual(deque2, deque1));
 
         deque2.removeFirst();
 
         assertFalse(EqualLib.areEqual(deque1, deque2));
+        assertFalse(EqualLib.areEqual(deque2, deque1));
 
     }
 
@@ -196,9 +222,11 @@ public class CollectionsDeepEqualsTest {
         Stack<String> stack2 = DeepCopyUtil.deepCopy(stack1);
 
         assertTrue(EqualLib.areEqual(stack1, stack2));
+        assertTrue(EqualLib.areEqual(stack2, stack1));
 
         stack2.pop();
         assertFalse(EqualLib.areEqual(stack1, stack2));
+        assertFalse(EqualLib.areEqual(stack2, stack1));
     }
 }
 

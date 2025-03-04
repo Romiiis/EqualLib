@@ -27,6 +27,7 @@ public class inheritanceTests {
         String str1 = "Hello";
         String str2 = "Hello";
         assertTrue(EqualLib.areEqual(str1, str2, config), "Identické řetězce by měly být shodné");
+        assertTrue(EqualLib.areEqual(str2, str1, config), "Identické řetězce by měly být shodné");
     }
 
     @Test
@@ -34,6 +35,7 @@ public class inheritanceTests {
         String str1 = "Hello";
         String str2 = "World";
         assertFalse(EqualLib.areEqual(str1, str2, config), "Rozdílné řetězce by neměly být shodné");
+        assertFalse(EqualLib.areEqual(str2, str1, config), "Rozdílné řetězce by neměly být shodné");
     }
 
     @Test
@@ -44,6 +46,7 @@ public class inheritanceTests {
         config.equivalenceByInheritance(true); // Povolit porovnání jen podle zděděných atributů
 
         assertTrue(EqualLib.areEqual(parent, child, config), "Dědičnost by měla stačit pro rovnost");
+        assertTrue(EqualLib.areEqual(child, parent, config), "Dědičnost by měla stačit pro rovnost");
     }
 
     @Test
@@ -54,6 +57,7 @@ public class inheritanceTests {
         config.equivalenceByInheritance(false); // Musí se porovnávat všechny atributy
 
         assertFalse(EqualLib.areEqual(parent, child, config), "Dědičnost nestačí, měly by se porovnávat i potomkovské atributy");
+        assertFalse(EqualLib.areEqual(child, parent, config), "Dědičnost nestačí, měly by se porovnávat i potomkovské atributy");
     }
 
     @Test
@@ -64,6 +68,7 @@ public class inheritanceTests {
         config.equivalenceByInheritance(true);
 
         assertTrue(EqualLib.areEqual(child1, child2, config), "Dva potomci stejného rodiče by měli být považováni za stejné při zapnuté dědičnosti");
+        assertTrue(EqualLib.areEqual(child2, child1, config), "Dva potomci stejného rodiče by měli být považováni za stejné při zapnuté dědičnosti");
     }
 
     @Test
@@ -75,6 +80,7 @@ public class inheritanceTests {
         config.equivalenceByInheritance(true);
 
         assertFalse(EqualLib.areEqual(parent1, parent2, config), "Rodiče s různými hodnotami by neměli být považováni za stejné");
+        assertFalse(EqualLib.areEqual(parent2, parent1, config), "Rodiče s různými hodnotami by neměli být považováni za stejné");
     }
 
     @Test
@@ -85,6 +91,7 @@ public class inheritanceTests {
         config.equivalenceByInheritance(true);
 
         assertFalse(EqualLib.areEqual(parent, unrelated, config), "Rodič a zcela jiná třída by neměly být považovány za stejné");
+        assertFalse(EqualLib.areEqual(unrelated, parent, config), "Rodič a zcela jiná třída by neměly být považovány za stejné");
     }
 
     @Test
@@ -99,6 +106,7 @@ public class inheritanceTests {
         map2.put("b", 2);
 
         assertTrue(EqualLib.areEqual(map1, map2, config), "Mapy se stejnými klíči a hodnotami by měly být shodné");
+        assertTrue(EqualLib.areEqual(map2, map1, config), "Mapy se stejnými klíči a hodnotami by měly být shodné");
     }
 
     @Test
@@ -113,12 +121,14 @@ public class inheritanceTests {
         map2.put("b", 3); // Rozdílná hodnota
 
         assertFalse(EqualLib.areEqual(map1, map2, config), "Mapy s rozdílnými hodnotami by neměly být shodné");
+        assertFalse(EqualLib.areEqual(map2, map1, config), "Mapy s rozdílnými hodnotami by neměly být shodné");
     }
 
     @Test
     void testNullEquality() {
         assertTrue(EqualLib.areEqual(null, null, config), "Dvě null hodnoty by měly být shodné");
         assertFalse(EqualLib.areEqual(null, "test", config), "Null a neprázdný objekt by neměly být shodné");
+        assertFalse(EqualLib.areEqual("test", null, config), "Null a neprázdný objekt by neměly být shodné");
     }
 
     @Test
@@ -128,12 +138,28 @@ public class inheritanceTests {
         Car truck = new Truck("Toyota", "Corolla", 2020, 1000);
 
         assertFalse(EqualLib.areEqual(sedan, truck, config), "Different classes should not be equal");
+        assertFalse(EqualLib.areEqual(truck, sedan, config), "Different classes should not be equal");
 
         config.equivalenceByInheritance(true);
 
         assertTrue(EqualLib.areEqual(sedan, truck, config), "Inherited fields should be equal");
+        assertTrue(EqualLib.areEqual(truck, sedan, config), "Inherited fields should be equal");
+    }
 
+    @Test
+    @DisplayName("Edge case")
+    void edgeCase() {
+        // Parent is superclass of Child
+        Parent parent = new Parent();
 
+        // Child is subclass of Parent
+        Child child = new Child();
+
+        config.equivalenceByInheritance(true);
+
+        assertTrue(EqualLib.areEqual(parent, child, config), "Inherited fields should be equal");
+
+        assertTrue(EqualLib.areEqual(child, parent, config), "Inherited fields should be equal");
     }
 
     static class Parent {

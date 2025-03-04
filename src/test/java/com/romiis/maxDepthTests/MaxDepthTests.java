@@ -18,9 +18,12 @@ public class MaxDepthTests {
         Person person2 = new Person("John", 30, new Address("Main St", new City("New York", 1000000, Country.USA)));
 
         assertTrue(EqualLib.areEqual(person1, person2));
+        // Symetric
+        assertTrue(EqualLib.areEqual(person2, person1));
 
         person2 = new Person("John", 30, new Address("Main St", new City("New York", 1000000, Country.UK)));
         assertFalse(EqualLib.areEqual(person1, person2));
+        assertFalse(EqualLib.areEqual(person2, person1));
 
     }
 
@@ -35,9 +38,11 @@ public class MaxDepthTests {
         config.setMaxDepth(1, false);
 
         assertTrue(EqualLib.areEqual(person1, person2, config));
+        assertTrue(EqualLib.areEqual(person2, person1, config));
 
         config.setMaxDepth(1, true);
         assertFalse(EqualLib.areEqual(person1, person2, config));
+        assertFalse(EqualLib.areEqual(person2, person1, config));
 
 
     }
@@ -53,15 +58,18 @@ public class MaxDepthTests {
         config.setMaxDepth(2, true);
 
         assertFalse(EqualLib.areEqual(person1, person2, config));
+        assertFalse(EqualLib.areEqual(person2, person1, config));
 
         person2 = new Person("John", 30, new Address("Main St", new City("Florida", 1000000, Country.USA)));
 
         config.setMaxDepth(2, true);
         assertFalse(EqualLib.areEqual(person1, person2, config));
+        assertFalse(EqualLib.areEqual(person2, person1, config));
 
 
         config.setMaxDepth(2, false);
         assertTrue(EqualLib.areEqual(person1, person2, config));
+        assertTrue(EqualLib.areEqual(person2, person1, config));
     }
 
     @Test
@@ -79,12 +87,18 @@ public class MaxDepthTests {
 
         // The depth is set to 1, so the comparison will only check the first level of the object. The address field will not be compared only the object of the array list
         assertTrue(EqualLib.areEqual(addresses1, addresses2, config));
+        assertTrue(EqualLib.areEqual(addresses2, addresses1, config));
+
         config.setMaxDepth(1, true);
         addresses2 = List.of(florida, new Address("Main St", new City("New York", 1000000, Country.UK)));
+
         assertFalse(EqualLib.areEqual(addresses1, addresses2, config));
+        assertFalse(EqualLib.areEqual(addresses2, addresses1, config));
+
 
         config.setMaxDepth(1, false);
         assertTrue(EqualLib.areEqual(addresses1, addresses2, config));
+        assertTrue(EqualLib.areEqual(addresses2, addresses1, config));
 
 
     }
@@ -103,9 +117,11 @@ public class MaxDepthTests {
         config.setMaxDepth(0, false);
 
         assertTrue(EqualLib.areEqual(person1, person2, config));
+        assertTrue(EqualLib.areEqual(person2, person1, config));
 
         config.setMaxDepth(0, true);
         assertFalse(EqualLib.areEqual(person1, person2, config));
+        assertFalse(EqualLib.areEqual(person2, person1, config));
     }
 
 

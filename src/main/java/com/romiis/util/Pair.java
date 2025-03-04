@@ -71,28 +71,45 @@ public class Pair {
             return null;
         }
 
-        if (equalitySuperclass) {
+        Class<?> class1 = pair.first.getClass();
+        Class<?> class2 = pair.second.getClass();
 
-            // Find the common superclass of the two objects (if both same type, return common parent)
+        if (equalitySuperclass) {
+            // If equalitySuperclass is true, find the common superclass of both objects
             Class<?> superClass = null;
-            for (Class<?> clazz = pair.first.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
-                if (clazz.equals(pair.second.getClass())) {
-                    continue;
-                }
-                if (clazz.isAssignableFrom(pair.second.getClass())) {
+
+            // Start by checking both classes' hierarchies
+            for (Class<?> clazz = class1; clazz != null; clazz = clazz.getSuperclass()) {
+                if (clazz.isAssignableFrom(class2)) {
                     superClass = clazz;
                     if (superClass.equals(Object.class)) {
-                        return null;
+                        return null; // No common superclass other than Object
                     }
                     break;
                 }
             }
+
+            // If no common superclass found, check the other direction (from class2 to class1)
+            if (superClass == null) {
+                for (Class<?> clazz = class2; clazz != null; clazz = clazz.getSuperclass()) {
+                    if (clazz.isAssignableFrom(class1)) {
+                        superClass = clazz;
+                        if (superClass.equals(Object.class)) {
+                            return null; // No common superclass other than Object
+                        }
+                        break;
+                    }
+                }
+            }
+
             return superClass;
 
         } else {
-            return pair.first.getClass().equals(pair.second.getClass()) ? pair.first.getClass() : null;
+            // If equalitySuperclass is false, check if both objects are of the same type
+            return class1.equals(class2) ? class1 : null;
         }
     }
+
 
 
     /**

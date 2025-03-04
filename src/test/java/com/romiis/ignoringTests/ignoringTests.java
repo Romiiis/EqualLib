@@ -18,9 +18,11 @@ public class ignoringTests {
         Person person2 = new Person("John", 30, new Address("Main St", new City("New York", 1000000, Country.USA)));
 
         assertTrue(EqualLib.areEqual(person1, person2));
+        assertTrue(EqualLib.areEqual(person2, person1));
 
         person2 = new Person("John", 30, new Address("Main St", new City("New York", 1000000, Country.UK)));
         assertFalse(EqualLib.areEqual(person1, person2));
+        assertFalse(EqualLib.areEqual(person2, person1));
     }
 
     @DisplayName("Ignore City")
@@ -30,12 +32,14 @@ public class ignoringTests {
         Person person2 = new Person("John", 30, new Address("Main St", new City("New York", 1000000, Country.USA)));
 
         assertFalse(EqualLib.areEqual(person1, person2));
+        assertFalse(EqualLib.areEqual(person2, person1));
 
 
         EqualLibConfig config = new EqualLibConfig();
         config.setIgnoredFields("com.romiis.ignoringTests.Address.city");
 
         assertTrue(EqualLib.areEqual(person1, person2, config));
+        assertTrue(EqualLib.areEqual(person2, person1, config));
     }
 
 
