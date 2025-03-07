@@ -3,6 +3,7 @@ package com.romiis.simpleTests;
 
 import com.romiis.core.EqualLib;
 import com.romiis.DeepCopyUtil;
+import com.romiis.core.EqualLibConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -736,9 +737,12 @@ public class SimpleTests {
 
         mapB.put(c, cMap);
         mapB.put(b, bMap);
-
         Map<ObjectA, ObjectMap> mapC = DeepCopyUtil.deepCopy(mapA);
         Map<ObjectA, ObjectMap> mapD = DeepCopyUtil.deepCopy(mapA);
+
+        System.out.println(mapC);
+        System.out.println(mapD);
+
 
 
         assertTrue(EqualLib.areEqual(mapC, mapD));

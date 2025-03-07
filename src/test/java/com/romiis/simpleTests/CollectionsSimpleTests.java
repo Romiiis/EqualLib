@@ -2,6 +2,7 @@ package com.romiis.simpleTests;
 
 import com.romiis.core.EqualLib;
 import com.romiis.DeepCopyUtil;
+import com.romiis.core.EqualLibConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -69,7 +70,9 @@ public class CollectionsSimpleTests {
 
         map2 = DeepCopyUtil.deepCopy(map1); // Deep copy of the map
 
-        assertTrue(EqualLib.areEqual(map1, map2));
+        EqualLibConfig config = new EqualLibConfig();
+        config.setDebugMode(true);
+        assertTrue(EqualLib.areEqual(map1, map2, config)); // Should be true
 
 
 
