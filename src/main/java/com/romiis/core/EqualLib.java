@@ -6,6 +6,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -16,6 +17,11 @@ import java.util.*;
  * @see Pair
  */
 public class EqualLib {
+
+    /**
+     * Cache for fields of classes
+     */
+    private static final Map<Class<?>, Field[]> FIELD_CACHE = new ConcurrentHashMap<>();
 
 
     /**
@@ -641,7 +647,21 @@ public class EqualLib {
      * @param clazz - the class to get the fields from
      */
     private static Field[] getFields(Class<?> clazz) {
-        return getFields(clazz, null);
+        return getCachedFields(clazz);
+
+    }
+
+
+    /**
+     * Get cached fields of a class
+     * If the fields are not cached, get the fields and cache them
+     * <p>
+     * The fields are cached to improve the performance of the deepEquals method
+     * The fields are cached in a ConcurrentHashMap
+     * The key is the class and the value is the array of fields
+     */
+    private static Field[] getCachedFields(Class<?> clazz) {
+        return FIELD_CACHE.computeIfAbsent(clazz, c -> getFields(c, null));
     }
 
 
