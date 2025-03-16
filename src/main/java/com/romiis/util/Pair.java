@@ -53,9 +53,22 @@ public class Pair {
             return true;
         }
         if (obj instanceof Pair other) {
-            return first.equals(other.first) && second.equals(other.second);
+            return first == other.first && second == other.second;
         }
         return false;
+    }
+
+    /**
+     * Hash code method that returns a stable, reference-based hash for each object.
+     *
+     * @return The hash code of the pair.
+     */
+    @Override
+    public int hashCode() {
+        // identityHashCode(...) returns a stable, reference-based hash for each object
+        int h1 = System.identityHashCode(first);
+        int h2 = System.identityHashCode(second);
+        return 31 * h1 + h2;
     }
 
 

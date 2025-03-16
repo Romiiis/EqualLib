@@ -144,6 +144,8 @@ public class CollectionsDeepEqualsTest {
 
         Map<Integer, String> map2 = DeepCopyUtil.deepCopy(map1);
 
+        System.out.println("copied");
+
         assertTrue(EqualLib.areEqual(map1, map2));
         assertTrue(EqualLib.areEqual(map2, map1));
 

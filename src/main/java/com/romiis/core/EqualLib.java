@@ -62,7 +62,7 @@ public class EqualLib {
         if (config == null) {
             config = new EqualLibConfig();
         }
-        return EqualLib.areEqual(new Pair(obj1, obj2, 0), new ArrayList<>(), new LinkedList<>(), config);
+        return EqualLib.areEqual(new Pair(obj1, obj2, 0), new HashSet<>(), new LinkedList<>(), config);
     }
 
 
@@ -76,7 +76,7 @@ public class EqualLib {
      * @param queue   Queue of objects to compare (when null, new queue is created)
      * @return - True if the objects are deeply equal, false otherwise
      */
-    private static boolean areEqual(Pair pairToCompare, List<Pair> visited, Queue<Pair> queue, EqualLibConfig config) {
+    private static boolean areEqual(Pair pairToCompare, Set<Pair> visited, Queue<Pair> queue, EqualLibConfig config) {
 
 
         // Add the first pair to the queue
@@ -144,7 +144,7 @@ public class EqualLib {
      * @param queue         Queue of objects to compare (when null, new queue is created)
      * @return - True if the objects are deeply equal, false otherwis
      */
-    private static boolean compareObject(Pair pairToCompare, Queue<Pair> queue, List<Pair> visited, EqualLibConfig config) {
+    private static boolean compareObject(Pair pairToCompare, Queue<Pair> queue, Set<Pair> visited, EqualLibConfig config) {
 
         // Type check
         Class<?> type = Pair.getCommonType(pairToCompare, config.isEquivalenceByInheritance());
@@ -448,7 +448,7 @@ public class EqualLib {
      * @param visited       List of visited pairs
      * @return true if the collections are equal, false otherwise
      */
-    private static boolean compareCollectionOrMap(Pair pairToCompare, Queue<Pair> queue, List<Pair> visited, EqualLibConfig config) {
+    private static boolean compareCollectionOrMap(Pair pairToCompare, Queue<Pair> queue, Set<Pair> visited, EqualLibConfig config) {
         Object obj1 = pairToCompare.getFirst();
         Object obj2 = pairToCompare.getSecond();
 
@@ -517,7 +517,7 @@ public class EqualLib {
      * @return true if the sets are equal, false otherwise
      * @hidden
      */
-    private static boolean compareSets(Pair setsToCompare, Queue<Pair> queue, List<Pair> visited, EqualLibConfig config) {
+    private static boolean compareSets(Pair setsToCompare, Queue<Pair> queue, Set<Pair> visited, EqualLibConfig config) {
 
         // Get the sets
         Set<?> set1 = (Set<?>) setsToCompare.getFirst();
@@ -567,7 +567,7 @@ public class EqualLib {
      * @return true if the maps are equal, false otherwise
      * @hidden
      */
-    private static boolean compareMaps(Pair mapsToCompare, Queue<Pair> queue, List<Pair> visited, EqualLibConfig config) {
+    private static boolean compareMaps(Pair mapsToCompare, Queue<Pair> queue, Set<Pair> visited, EqualLibConfig config) {
 
         // Get the maps
         Map<?, ?> mapA = (Map<?, ?>) mapsToCompare.getFirst();
