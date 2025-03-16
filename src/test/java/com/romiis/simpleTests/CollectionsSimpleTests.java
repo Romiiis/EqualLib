@@ -71,7 +71,7 @@ public class CollectionsSimpleTests {
         map2 = DeepCopyUtil.deepCopy(map1); // Deep copy of the map
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setDebugMode(true);
+        config.setDebugEnabled(true);
         assertTrue(EqualLib.areEqual(map1, map2, config)); // Should be true
 
 

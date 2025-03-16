@@ -36,7 +36,7 @@ public class ignoringTests {
 
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setIgnoredFields("com.romiis.ignoringTests.Address.city");
+        config.setIgnoredFieldPaths("com.romiis.ignoringTests.Address.city");
 
         assertTrue(EqualLib.areEqual(person1, person2, config));
         assertTrue(EqualLib.areEqual(person2, person1, config));

@@ -26,15 +26,15 @@ public class customEqualsTests {
         assertFalse(EqualLib.areEqual(person2, person1));
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setUseCustomEqualsIn("com.romiis.customEqualsTests");
+        config.setCustomEqualsClasses("com.romiis.customEqualsTests");
         assertTrue(EqualLib.areEqual(person1, person2, config));
         assertTrue(EqualLib.areEqual(person2, person1, config));
 
-        config.setUseCustomEqualsIn("com.romiis");
+        config.setCustomEqualsClasses("com.romiis");
         assertTrue(EqualLib.areEqual(person1, person2, config));
         assertTrue(EqualLib.areEqual(person2, person1, config));
 
-        config.setUseCustomEqualsIn("com.romiis.customEqualsTests.Person");
+        config.setCustomEqualsClasses("com.romiis.customEqualsTests.Person");
         assertTrue(EqualLib.areEqual(person1, person2, config));
         assertTrue(EqualLib.areEqual(person2, person1, config));
 

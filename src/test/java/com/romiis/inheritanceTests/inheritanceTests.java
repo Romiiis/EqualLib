@@ -19,7 +19,7 @@ public class inheritanceTests {
     @BeforeEach
     void setUp() {
         config = new EqualLibConfig();
-        config.setCompareByElementsAndKeys(true);
+        config.setCompareCollectionsAsWhole(true);
     }
 
     @Test
@@ -43,7 +43,7 @@ public class inheritanceTests {
         Parent parent = new Parent();
         Child child = new Child();
 
-        config.equivalenceByInheritance(true); // Povolit porovnání jen podle zděděných atributů
+        config.setCompareInheritedFields(true); // Povolit porovnání jen podle zděděných atributů
 
         assertTrue(EqualLib.areEqual(parent, child, config), "Dědičnost by měla stačit pro rovnost");
         assertTrue(EqualLib.areEqual(child, parent, config), "Dědičnost by měla stačit pro rovnost");
@@ -54,7 +54,7 @@ public class inheritanceTests {
         Parent parent = new Parent();
         Child child = new Child();
 
-        config.equivalenceByInheritance(false); // Musí se porovnávat všechny atributy
+        config.setCompareInheritedFields(false); // Musí se porovnávat všechny atributy
 
         assertFalse(EqualLib.areEqual(parent, child, config), "Dědičnost nestačí, měly by se porovnávat i potomkovské atributy");
         assertFalse(EqualLib.areEqual(child, parent, config), "Dědičnost nestačí, měly by se porovnávat i potomkovské atributy");
@@ -65,7 +65,7 @@ public class inheritanceTests {
         Child child1 = new Child();
         AnotherChild child2 = new AnotherChild();
 
-        config.equivalenceByInheritance(true);
+        config.setCompareInheritedFields(true);
 
         assertTrue(EqualLib.areEqual(child1, child2, config), "Dva potomci stejného rodiče by měli být považováni za stejné při zapnuté dědičnosti");
         assertTrue(EqualLib.areEqual(child2, child1, config), "Dva potomci stejného rodiče by měli být považováni za stejné při zapnuté dědičnosti");
@@ -77,7 +77,7 @@ public class inheritanceTests {
         Parent parent2 = new Parent();
         parent2.value = 30; // Jiná hodnota
 
-        config.equivalenceByInheritance(true);
+        config.setCompareInheritedFields(true);
 
         assertFalse(EqualLib.areEqual(parent1, parent2, config), "Rodiče s různými hodnotami by neměli být považováni za stejné");
         assertFalse(EqualLib.areEqual(parent2, parent1, config), "Rodiče s různými hodnotami by neměli být považováni za stejné");
@@ -88,7 +88,7 @@ public class inheritanceTests {
         Parent parent = new Parent();
         UnrelatedClass unrelated = new UnrelatedClass();
 
-        config.equivalenceByInheritance(true);
+        config.setCompareInheritedFields(true);
 
         assertFalse(EqualLib.areEqual(parent, unrelated, config), "Rodič a zcela jiná třída by neměly být považovány za stejné");
         assertFalse(EqualLib.areEqual(unrelated, parent, config), "Rodič a zcela jiná třída by neměly být považovány za stejné");
@@ -140,7 +140,7 @@ public class inheritanceTests {
         assertFalse(EqualLib.areEqual(sedan, truck, config), "Different classes should not be equal");
         assertFalse(EqualLib.areEqual(truck, sedan, config), "Different classes should not be equal");
 
-        config.equivalenceByInheritance(true);
+        config.setCompareInheritedFields(true);
 
         assertTrue(EqualLib.areEqual(sedan, truck, config), "Inherited fields should be equal");
         assertTrue(EqualLib.areEqual(truck, sedan, config), "Inherited fields should be equal");
@@ -155,7 +155,7 @@ public class inheritanceTests {
         // Child is subclass of Parent
         Child child = new Child();
 
-        config.equivalenceByInheritance(true);
+        config.setCompareInheritedFields(true);
 
         assertTrue(EqualLib.areEqual(parent, child, config), "Inherited fields should be equal");
 

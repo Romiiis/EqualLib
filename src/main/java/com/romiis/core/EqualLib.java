@@ -95,13 +95,13 @@ public class EqualLib {
 
             // If one of the objects is null, return false
             if (Pair.isNullPresent(pair)) {
-                if (config.isDebugMode()) System.out.println("One of the objects is null");
+                if (config.isDebugEnabled()) System.out.println("One of the objects is null");
                 return false;
             }
 
 
-            if (config.getMaxDepth() != -1 && pair.getDepth() >= config.getMaxDepth()) {
-                if (config.isUseEqualsAfterMaxDepth()) {
+            if (config.getMaxComparisonDepth() != -1 && pair.getDepth() >= config.getMaxComparisonDepth()) {
+                if (config.isUseStandardEqualsAfterDepth()) {
                     if (!compareWrapperOrString(pair)) {
                         return false;
                     }
@@ -147,7 +147,7 @@ public class EqualLib {
     private static boolean compareObject(Pair pairToCompare, Queue<Pair> queue, Set<Pair> visited, EqualLibConfig config) {
 
         // Type check
-        Class<?> type = Pair.getCommonType(pairToCompare, config.isEquivalenceByInheritance());
+        Class<?> type = Pair.getCommonType(pairToCompare, config.isCompareInheritedFields());
 
         // There is no class to compare not found
         if (type == null) {
@@ -159,8 +159,8 @@ public class EqualLib {
             // If it is not the anonymous class, return false
             if (type == null) {
 
-                if (config.isDebugMode()) {
-                    if (config.isEquivalenceByInheritance())
+                if (config.isDebugEnabled()) {
+                    if (config.isCompareInheritedFields())
                         System.out.println("No common superclass found for pair: " + pairToCompare);
 
                     else System.out.println("No class found for pair: " + pairToCompare);
@@ -176,7 +176,7 @@ public class EqualLib {
 
         if (isUseCustomEquals(type, config)) {
             if (!pairToCompare.getFirst().equals(pairToCompare.getSecond())) {
-                if (config.isDebugMode()) System.out.println("Custom equals method returned false");
+                if (config.isDebugEnabled()) System.out.println("Custom equals method returned false");
                 return false;
             }
             return true;
@@ -193,7 +193,7 @@ public class EqualLib {
             result = compareArray(pairToCompare, queue);
         } else {
 
-            if (isCollectionOrMap(type) && config.isCompareByElementsAndKeys()) {
+            if (isCollectionOrMap(type) && config.isCompareCollectionsAsWhole()) {
                 // Collections => Compare collections element by element
                 result = compareCollectionOrMap(pairToCompare, queue, visited, config);
             } else {
@@ -204,7 +204,7 @@ public class EqualLib {
 
         }
 
-        if (config.isDebugMode()) System.out.println("Pair: " + pairToCompare + " is equal: " + result);
+        if (config.isDebugEnabled()) System.out.println("Pair: " + pairToCompare + " is equal: " + result);
         return result;
 
     }
@@ -235,7 +235,7 @@ public class EqualLib {
 
         // Check if the number of fields is equal
         if (fieldsA.length != fieldsB.length) {
-            if (config.isDebugMode()) System.out.println("Number of fields is not equal");
+            if (config.isDebugEnabled()) System.out.println("Number of fields is not equal");
             return false;
         }
 
@@ -247,11 +247,11 @@ public class EqualLib {
 
             // If no matching field is found, the objects are not equal
             if (fieldB == null) {
-                if (config.isDebugMode()) System.out.println("Field: " + fieldA.getName() + " is not equal");
+                if (config.isDebugEnabled()) System.out.println("Field: " + fieldA.getName() + " is not equal");
                 return false;
             }
 
-            if (!config.getIgnoredFields().isEmpty() && isIgnoredField(type, fieldA, config)) {
+            if (!config.getIgnoredFieldPaths().isEmpty() && isIgnoredField(type, fieldA, config)) {
                 continue;
             }
 
@@ -266,7 +266,7 @@ public class EqualLib {
 
 
                 if (valueA == null || valueB == null) {
-                    if (config.isDebugMode())
+                    if (config.isDebugEnabled())
                         System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
                     return false;
                 }
@@ -275,12 +275,12 @@ public class EqualLib {
                 if (valueA.getClass().isPrimitive() || isWrapperOrString(valueA.getClass())) {
 
                     if (!compareWrapperOrString(new Pair(valueA, valueB))) {
-                        if (config.isDebugMode())
+                        if (config.isDebugEnabled())
                             System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
                         return false;
                     }
 
-                    if (config.isDebugMode())
+                    if (config.isDebugEnabled())
                         System.out.println("Field: " + fieldA.getName() + " is equal " + valueA + " " + valueB);
 
                 } else {
@@ -310,7 +310,7 @@ public class EqualLib {
     private static boolean isIgnoredField(Class<?> clazz, Field field, EqualLibConfig config) {
         String fieldName = field.getName();
         String fullFieldName = clazz.getName() + "." + fieldName;
-        return config.getIgnoredFields().contains(fullFieldName);
+        return config.getIgnoredFieldPaths().contains(fullFieldName);
     }
 
     /**
@@ -328,7 +328,7 @@ public class EqualLib {
         String path = "";
         for (String part : className.split("\\.")) {
             path += part;
-            if (config.getUseCustomEquals().contains(path)) {
+            if (config.getCustomEqualsClasses().contains(path)) {
                 return true;
             }
             path += ".";
