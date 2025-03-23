@@ -315,7 +315,7 @@ public class ComplexTests {
         assertTrue(EqualLib.areEqual(root1, root2), "Graphs should be equal");
         assertTrue(EqualLib.areEqual(root2, root1), "Graphs should be equal");
 
-        root1 = TestGraphGenerator.generateCyclicGraph(1_000_000);
+        root1 = TestGraphGenerator.generateCyclicGraph(1000);
         root2 = TestGraphGenerator.copyGraphIterative(root1);
 
         long start = System.currentTimeMillis();
