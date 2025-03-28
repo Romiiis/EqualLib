@@ -89,6 +89,7 @@ public class Pair {
 
 
         if (equalitySuperclass) {
+
             // If equalitySuperclass is true, find the common superclass of both objects
             Class<?> superClass = null;
 
@@ -106,7 +107,7 @@ public class Pair {
                 if (clazz.isAssignableFrom(class2)) {
                     superClass = clazz;
                     if (superClass.equals(Object.class)) {
-                        return null; // No common superclass other than Object
+                        return null;
                     }
                     break;
                 }

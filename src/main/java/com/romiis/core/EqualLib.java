@@ -174,7 +174,7 @@ public class EqualLib {
 
         boolean result;
 
-        if (isUseCustomEquals(type, config)) {
+        if (useCustomEquals(type, config)) {
             if (!pairToCompare.getFirst().equals(pairToCompare.getSecond())) {
                 if (config.isDebugEnabled()) System.out.println("Custom equals method returned false");
                 return false;
@@ -320,7 +320,7 @@ public class EqualLib {
      * @param config Configuration for the comparison
      * @return true if the class is in useCustomEquals, false otherwise
      */
-    private static boolean isUseCustomEquals(Class<?> clazz, EqualLibConfig config) {
+    private static boolean useCustomEquals(Class<?> clazz, EqualLibConfig config) {
         // Get the class name (with package)
         String className = clazz.getName();
 
