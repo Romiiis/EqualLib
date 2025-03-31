@@ -664,5 +664,12 @@ public class EqualLib {
         return FIELD_CACHE.computeIfAbsent(clazz, c -> getFields(c, null));
     }
 
+    /**
+     * Clear the field cache to free up memory
+     */
+    public static void clearFieldCache() {
+        FIELD_CACHE.clear();
+    }
+
 
 }
