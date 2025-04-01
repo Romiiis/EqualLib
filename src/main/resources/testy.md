@@ -293,30 +293,27 @@
 
 ### Scénář B: Objekty s velkou hloubkou zanoření
 **Popis:**
-- Vytvoříme strukturu, kde každý objekt obsahuje jeden nebo více zanořených objektů, přičemž počet zanoření může dosáhnout např. 50 úrovní.
-- Rozdíly mohou být detekovány pouze na poslední úrovni nebo zcela chybět.
+- Vytvoříme linkovou strukturu objektů, kde každý objekt obsahuje odkaz na další objekt.
+- Tato struktura bude mít velkou hloubku zanoření (např. 1000 úrovní).
 
 **Test:**
-- Provedeme areEquals s různým nastavením `maxComparisonDepth` (např. -1 vs. 10 vs. 50) a změříme dobu porovnání.
+- Spustíme areEquals na těchto objektech a změříme dobu porovnání.
 
 **Očekávaný výsledek:**
-- Při nastavení `maxComparisonDepth = -1` (neomezená hloubka) bude doba porovnání výrazně vyšší.
-- Při omezené hloubce (např. `maxComparisonDepth = 10`) se rozdíly v hlubších úrovních nebudou porovnávat, což povede k rychlejšímu vyhodnocení, ale potenciálně i k přehlédnutí rozdílů.
+- Doba porovnání bude úměrná hloubce zanoření, tedy rostoucí lineárně s počtem úrovní.
 
 ---
 
 ### Scénář C: Kombinace velké šířky a hloubky
 **Popis:**
-- Vytvoříme komplexní objekty, kde na každé úrovni (např. 10 úrovní zanoření) obsahuje objekt velký počet polí
+- Vytvoříme komplexní objekty, které budou obsahovat mnoho atributů a zároveň budou mít velkou hloubku zanoření.
 - Tato kombinace simuluje reálné, komplexní datové struktury.
 
 **Test:**
-- Spustíme areEquals a zaznamenáme dobu porovnání.
-- Testujeme jak s nastavením `maxComparisonDepth = -1`, tak s omezenou hloubkou.
+- Spustíme areEqual a zaznamenáme dobu porovnání.
 
 **Očekávaný výsledek:**
 - Výkon bude výrazně ovlivněn jak počtem zanořených úrovní, tak počtem atributů na každé úrovni.
-- Omezením hloubky se může zrychlit porovnání, pokud rozdíly v hlubších úrovních nejsou pro výsledek kritické.
 
 ---
 
@@ -345,7 +342,6 @@
 **Test:**
 - Provedeme areEquals na objektech s různými kolekcemi a změříme dobu porovnání.
 - Porovnáme výsledky s nastavením `compareCollectionsAsWhole = true` a `compareCollectionsAsWhole = false`.
-- Testujeme různé scénáře s kolekcemi (prázdné, s jedním prvkem, s různým počtem prvků).
 
 **Očekávaný výsledek:**
 - Porovnání kolekcí jako celků by mělo být rychlejší než položka po položce, pokud jsou kolekce shodné.
