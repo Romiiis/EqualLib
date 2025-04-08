@@ -193,7 +193,7 @@ public class EqualLib {
             result = compareArray(pairToCompare, queue);
         } else {
 
-            if (isCollectionOrMap(type) && config.isCompareCollectionsAsWhole()) {
+            if (isCollectionOrMap(type) && config.isCompareCollectionsByElements()) {
                 // Collections => Compare collections element by element
                 result = compareCollectionOrMap(pairToCompare, queue, visited, config);
             } else {

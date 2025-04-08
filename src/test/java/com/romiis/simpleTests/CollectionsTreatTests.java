@@ -16,7 +16,7 @@ public class CollectionsTreatTests {
     @Test
     void testCollections() {
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
         List<Integer> list1 = Arrays.asList(1, 2, 3);
         List<Integer> list2 = Arrays.asList(1, 2, 3);
         List<Integer> list3 = Arrays.asList(3, 2, 1);
@@ -32,7 +32,7 @@ public class CollectionsTreatTests {
         Set<String> set2 = new HashSet<>(Arrays.asList("C", "A", "B"));
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
         assertTrue(EqualLib.areEqual(set1, set2, config));
 
         set2.add("D");
@@ -51,7 +51,7 @@ public class CollectionsTreatTests {
         map2.put("A", 1);
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
 
         assertTrue(EqualLib.areEqual(map1, map2, config));
 
@@ -72,11 +72,11 @@ public class CollectionsTreatTests {
         map2.put(p2, "Developer");
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(false);
+        config.setCompareCollectionsByElements(false);
 
         assertFalse(EqualLib.areEqual(map1, map2, config));
 
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
 
         assertTrue(EqualLib.areEqual(map1, map2, config));
 
@@ -92,7 +92,7 @@ public class CollectionsTreatTests {
         node2.setNext(node2);
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
 
         assertTrue(EqualLib.areEqual(node1, node2, config));
 
@@ -116,7 +116,7 @@ public class CollectionsTreatTests {
         p4.addFriend(p3);
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
 
         assertTrue(EqualLib.areEqual(p1, p3, config));
     }
@@ -140,7 +140,7 @@ public class CollectionsTreatTests {
         complexMap2.put("level1", nestedMap2);
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
 
         assertTrue(EqualLib.areEqual(complexMap1, complexMap2, config));
 
@@ -169,7 +169,7 @@ public class CollectionsTreatTests {
         node6.setNext(node4); // Same cycle as node1 -> node2 -> node3
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
 
 
 
@@ -192,7 +192,7 @@ public class CollectionsTreatTests {
         Person p2 = new Person("John", 40, addr2);
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
 
         assertTrue(EqualLib.areEqual(p1, p2, config)); // Should return true because the fields are the same
 
@@ -219,7 +219,7 @@ public class CollectionsTreatTests {
 
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true).setDebugEnabled(true);
+        config.setCompareCollectionsByElements(true).setDebugEnabled(true);
 
 
         assertTrue(EqualLib.areEqual(obj1, obj2, config)); // Should return true since the fields are the same
@@ -255,7 +255,7 @@ public class CollectionsTreatTests {
         map2.put("friends", list2);
 
         EqualLibConfig config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
 
         assertTrue(EqualLib.areEqual(map1, map2, config)); // Same nested structures, should return true
     }

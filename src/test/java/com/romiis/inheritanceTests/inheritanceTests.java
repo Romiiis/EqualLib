@@ -19,7 +19,7 @@ public class inheritanceTests {
     @BeforeEach
     void setUp() {
         config = new EqualLibConfig();
-        config.setCompareCollectionsAsWhole(true);
+        config.setCompareCollectionsByElements(true);
     }
 
     @Test

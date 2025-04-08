@@ -44,7 +44,7 @@ public class EqualLibConfig {
      * If true, collections (Lists, Sets, Maps) are compared as whole objects by examining their internal structure.
      * If false, collections are compared element by element.
      */
-    private boolean compareCollectionsAsWhole = false;
+    private boolean compareCollectionsByElements = false;
 
     /**
      * If true, debug information is printed during the comparison process.
@@ -100,12 +100,12 @@ public class EqualLibConfig {
     /**
      * Sets how collections should be compared.
      *
-     * @param compareCollectionsAsWhole If true, collections are compared as whole objects by examining their internal structure.
+     * @param compareCollectionsByElements If true, collections are compared as whole objects by examining their internal structure.
      *                                  If false, collections are compared element by element.
      * @return Updated EqualLibConfig instance.
      */
-    public EqualLibConfig setCompareCollectionsAsWhole(boolean compareCollectionsAsWhole) {
-        this.compareCollectionsAsWhole = compareCollectionsAsWhole;
+    public EqualLibConfig setCompareCollectionsByElements(boolean compareCollectionsByElements) {
+        this.compareCollectionsByElements = compareCollectionsByElements;
         return this;
     }
 
@@ -140,8 +140,8 @@ public class EqualLibConfig {
         return compareInheritedFields;
     }
 
-    public boolean isCompareCollectionsAsWhole() {
-        return compareCollectionsAsWhole;
+    public boolean isCompareCollectionsByElements() {
+        return compareCollectionsByElements;
     }
 
     public boolean isDebugEnabled() {

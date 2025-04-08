@@ -276,11 +276,9 @@
 
 ---
 
-## Porovnání velkých objektů
-
 ### Scénář A: Objekty s velkou šířkou (mnoho atributů)
 **Popis:**
-- Vytvoříme dva objekty se stejnou strukturou, kde bude například několik polí s velkým počtem prvků .
+- Vytvoříme dva objekty se stejnou strukturou, kde bude například několik polí s velkým počtem prvků (100, 1000, 10 000, 100 000, 1 000 000).
 - Atributy budou jednoduchého typu (čísla, řetězce apod.).
 
 **Test:**
@@ -294,7 +292,7 @@
 ### Scénář B: Objekty s velkou hloubkou zanoření
 **Popis:**
 - Vytvoříme linkovou strukturu objektů, kde každý objekt obsahuje odkaz na další objekt.
-- Tato struktura bude mít velkou hloubku zanoření (např. 1000 úrovní).
+- Tato struktura bude mít velkou hloubku zanoření (100, 1000, 10 000, 100 000, 1 000 000).
 
 **Test:**
 - Spustíme areEquals na těchto objektech a změříme dobu porovnání.
@@ -306,70 +304,67 @@
 
 ### Scénář C: Kombinace velké šířky a hloubky
 **Popis:**
-- Vytvoříme komplexní objekty, které budou obsahovat mnoho atributů a zároveň budou mít velkou hloubku zanoření.
+- Vytvoříme komplexní objekty, které budou obsahovat mnoho atributů a zároveň budou mít velkou hloubku zanoření (100, 500, 1000, 2000, 5000).
 - Tato kombinace simuluje reálné, komplexní datové struktury.
+- Pokud bude objekt mít například 1000 atributů a 1000 úrovní zanoření, bude mít celkem 1 000 000 prvků.
 
 **Test:**
 - Spustíme areEqual a zaznamenáme dobu porovnání.
 
 **Očekávaný výsledek:**
-- Výkon bude výrazně ovlivněn jak počtem zanořených úrovní, tak počtem atributů na každé úrovni.
+- V poměru s počtem atributů by se doba porovnání měla zvyšovat lineárně.
 
 ---
 
-### Scénář D: Vliv ignorovaných polí a vlastních equals metod
+### Scénář D: Vliv ignorování atributů
 **Popis:**
-- Vytvoříme velké objekty s mnoha atributy, z nichž některé budou přidány do `ignoredFieldPaths`.
-- Některé objekty budou obsahovat atributy, které mají vlastní implementaci `equals()` a jsou zahrnuty v `customEqualsClasses`.
+- Vytvoříme objekt, který má několik atributů, z nichž některé budou ignorovány (např. `ignoredField`).
+- V jednom případě bude ignorované pole komplexní objekt (reference na jiný objekt), v druhém případě bude ignorované pole jednoduchého typu (např. `string`).
+- Objekt se bude rozšiřovat pouze o počet elementů v kolekcích (100, 1000, 10 000, 100 000, 1 000 000).
 
 **Test:**
-- Provedeme areEquals na objektech s a bez ignorovaných polí a s využitím vlastních equals metod.
+- Provedeme areEqual na objektech s a bez ignorovaných polí.
 - Změříme dobu porovnání a analyzujeme, jaký vliv má každé nastavení na výkon.
 
 **Očekávaný výsledek:**
-- Ignorování polí sníží počet porovnávaných atributů, což by mělo zrychlit celý proces.
-- Použití vlastních equals metod může mít dvojí efekt – pokud jsou implementace optimalizované, mohou zrychlit porovnání, ale pokud jsou složité, může dojít k prodloužení času porovnávání.
-
+- V případě ignorování komplexního objektu by mělo být porovnání rychlejší než bez ignorování z důvodu režie, která je spojena s hledáním, zda-li je pole ignorováno.
+- Pokud je ignorováno pole jednoduchého typu, je pravděpodobné, že doba spojená s režií, která hledá, zda-li je pole ignorováno, bude vyšší než doba porovnání samotného pole, což by mělo vést k delší době porovnání než bez ignorování.
 
 
 ### Scénář E: Porovnání kolekcí 
 **Popis:**
-- Vytvoříme objekty obsahující kolekce s různým počtem prvků.
+- Vytvoříme objekty obsahující kolekce s různým počtem prvků (100, 1000, 10 000, 100 000, 1 000 000).
 - Nastavíme `compareCollectionsAsWhole = true` a `compareCollectionsAsWhole = false`.
-- Porovnáme objekty s různými kolekcemi (shodný obsah, různý počet prvků, různé prvky).
-- Měříme dobu porovnání.
-- 
+- Testovaná kolekce je SET, z důvodu neseřaditelnosti prvků.
+
 **Test:**
-- Provedeme areEquals na objektech s různými kolekcemi a změříme dobu porovnání.
+- Provedeme areEqual na objektu s kolekcí a změříme dobu porovnání.
 - Porovnáme výsledky s nastavením `compareCollectionsAsWhole = true` a `compareCollectionsAsWhole = false`.
 
 **Očekávaný výsledek:**
-- Porovnání kolekcí jako celků by mělo být rychlejší než položka po položce, pokud jsou kolekce shodné.
+- Porovnání kolekcí jako celků by mělo být rychlejší než položka po položce, pokud jsou kolekce shodné, z důvodu rekurzivního porovnávání a hledání shody v položkách.
 
-### Scénář F: Porovnání Extrémní hloubky
+### Scénář F: Porovnání rozsáhlé struktury
 **Popis:**
-- Vytvoříme objekty s extrémní hloubkou zanoření, například reprezentované binárním stromem s hloubkou 20.
-- Algoritmus areEquals projde celou strukturu, tedy až do poslední úrovně.
+- Vytvoříme binární stromovou strukturu, kde každý uzel obsahuje hodnotu a odkazy na levého a pravého potomka
+- Hloubka stromu bude (5, 10, 15, 20, 25).
+- Algoritmus areEqual projde celou strukturu, tedy až do poslední úrovně.
 
 **Test:**
-- Spustíme areEquals na objektech s extrémní hloubkou a změříme dobu porovnání.
+- Spustíme areEqual na stromové struktuře a změříme dobu porovnání.
 
 **Očekávaný výsledek:**
-- Čas porovnání by měl zůstat v rozumných mezích, pokud je implementace optimalizovaná.
-- U extrémně zanořených struktur (např. hloubka 20) může dojít ke zvýšení výpočetního času, ale správná optimalizace (detekce cyklů, omezení rekurze, případně přepnutí na iterativní přístup) zajistí, že výsledná doba nebude nepřijatelná.
-- Pokud optimalizace chybí, může dojít k výraznému prodloužení doby porovnání, což by bylo problém – proto je důležité testovat a optimalizovat implementaci.
+- V závislosti na počtu prvků ve stromech by se doba porovnání měla zvyšovat lineárně.
 
-
-### Scénář G: Porovnání objektů pomocí areEquals a standardního equals
+### Scénář G: Porovnání areEqual a standardní metody equals
 **Popis:**
-- Vytvoříme objekty, které mají implementovaný standardní equals a zároveň použijeme areEquals.
+- Vytvoříme objekty, které mají implementovaný standardní equals a zároveň použijeme areEqual.
 - Mají nějakou hloubku zanoření a obsahují několik atributů.
 
 **Test:**
-- Provedeme porovnání objektů pomocí areEquals a standardního equals.
+- Provedeme porovnání objektů pomocí areEqual a standardního equals.
 - Změříme dobu porovnání a porovnáme výsledky.
 - Testujeme různé scénáře s objekty (shodné, s rozdíly, s různými atributy).
 
 **Očekávaný výsledek:**
-- areEquals by mělo být rychlejší než standardní equals, pokud jsou objekty shodné.
-- Testujeme co je rychlejší, porovnání pomocí areEquals nebo standardního equals.
+- equals by mělo být rychlejší než areEqual, pokud jsou objekty shodné, z důvodu použití reflexe a dalších operecí, které areEqual provádí.

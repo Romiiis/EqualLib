@@ -32,9 +32,6 @@ public class ThesisTests {
         assertFalse(EqualLib.areEqual(s1, s2, config), "Objects should not be equal because of the data field");
     }
 
-    /* =========================================
-       Scenarios 3–5: Inheritance
-       ========================================= */
 
     @Test
     @DisplayName("Test 3: Inheritance without flag (default) – different subclass attributes")
@@ -68,9 +65,6 @@ public class ThesisTests {
                 "Objects should not be equal if subclass-specific fields are compared");
     }
 
-    /* =========================================
-       Scenarios 6, 8, 9: Depth Comparison
-       ========================================= */
 
     @Test
     @DisplayName("Test 6: Unlimited depth comparison (maxComparisonDepth = -1)")
@@ -90,7 +84,7 @@ public class ThesisTests {
     }
 
     @Test
-    @DisplayName("Test 8: Limited depth comparison (maxComparisonDepth = 2) – differences deeper than level 2 are ignored")
+    @DisplayName("Test 7: Limited depth comparison (maxComparisonDepth = 2) – differences deeper than level 2 are ignored")
     void testLimitedDepth() {
         // Difference appears at level 3.
         Nested level3a = new Nested("diff", null);
@@ -108,7 +102,7 @@ public class ThesisTests {
     }
 
     @Test
-    @DisplayName("Test 9: Switch to standard equals after reaching max depth")
+    @DisplayName("Test 8: Switch to standard equals after reaching max depth")
     void testStandardEqualsAfterDepth() {
         // CustomNested is defined in your objects package.
         CustomNested level3a = new CustomNested("A", null);
@@ -125,12 +119,9 @@ public class ThesisTests {
                 "Standard equals after reaching depth should detect differences");
     }
 
-    /* =========================================
-       Scenarios 10–12: Ignoring Fields
-       ========================================= */
 
     @Test
-    @DisplayName("Test 10: Ignoring one field (timestamp)")
+    @DisplayName("Test 9: Ignoring one field (timestamp)")
     void testIgnoreOneField() {
         // WithTimestamp is defined in your objects package.
         WithTimestamp obj1 = new WithTimestamp(1, 1000L);
@@ -142,7 +133,7 @@ public class ThesisTests {
     }
 
     @Test
-    @DisplayName("Test 11: Ignoring multiple fields (timestamp, metadata)")
+    @DisplayName("Test 10: Ignoring multiple fields (timestamp, metadata)")
     void testIgnoreMultipleFields() {
         // WithMultiple is defined in your objects package.
         WithMultiple obj1 = new WithMultiple(1, 1000L, "data1");
@@ -156,7 +147,7 @@ public class ThesisTests {
     }
 
     @Test
-    @DisplayName("Test 12: Ignoring a non-existent field")
+    @DisplayName("Test 11: Ignoring a non-existent field")
     void testIgnoreNonExistentField() {
         // WithSimpleField is defined in your objects package.
         WithSimpleField obj1 = new WithSimpleField(10);
@@ -167,12 +158,10 @@ public class ThesisTests {
                 "Comparison should work correctly even if a non-existent field is ignored");
     }
 
-    /* =========================================
-       Scenarios 13–14: Custom equals for Classes
-       ========================================= */
+
 
     @Test
-    @DisplayName("Test 13: Using custom equals for a specific class")
+    @DisplayName("Test 12: Using custom equals for a specific class")
     void testCustomEqualsForClass() {
         // SpecialClass is defined in your objects package.
         SpecialClass obj1 = new SpecialClass(2);
@@ -189,7 +178,7 @@ public class ThesisTests {
     }
 
     @Test
-    @DisplayName("Test 14: Using custom equals for an entire package")
+    @DisplayName("Test 13: Using custom equals for an entire package")
     void testCustomEqualsForPackage() {
         // SpecialPackageClass is defined in your objects package.
         SpecialPackageClass obj1 = new SpecialPackageClass("Test");
@@ -200,35 +189,46 @@ public class ThesisTests {
                 "Objects should be equal according to the custom equals defined for the package");
     }
 
-    /* =========================================
-       Scenarios 15–17: Comparing Collections
-       ========================================= */
+
 
     @Test
-    @DisplayName("Test 15: Compare collections as wholes")
+    @DisplayName("Test 14: Compare collections as whole")
     void testCompareCollectionsAsWhole() {
         // WithCollection is defined in your objects package.
-        WithCollection obj1 = new WithCollection(Arrays.asList(1, 2, 3));
-        WithCollection obj2 = new WithCollection(Arrays.asList(1, 2, 3));
-        EqualLibConfig config = new EqualLibConfig()
-                .setCompareCollectionsAsWhole(true);
-        assertTrue(EqualLib.areEqual(obj1, obj2, config),
-                "Collections compared as a whole should be equal");
-    }
+        WithCollection obj1 = new WithCollection(new ArrayList<>(Arrays.asList(1, 2, 3)));
+        WithCollection obj2 = new WithCollection(new ArrayList<>(Arrays.asList(1, 2, 3)));
 
-    @Test
-    @DisplayName("Test 16: Compare collections item by item")
-    void testCompareCollectionsItemByItem() {
-        WithCollection obj1 = new WithCollection(Arrays.asList(1, 2, 3));
-        WithCollection obj2 = new WithCollection(Arrays.asList(1, 2, 4));
+        obj2.numbers.add(4); // Adding an element to obj2's collection
+        obj2.numbers.remove(3); // Removing an element from obj2's collection
+
         EqualLibConfig config = new EqualLibConfig()
-                .setCompareCollectionsAsWhole(false);
+                .setCompareCollectionsByElements(true);
+
+        config.setCompareCollectionsByElements(false);
         assertFalse(EqualLib.areEqual(obj1, obj2, config),
-                "Item-by-item comparison should detect differences");
+                "Collections compared as whole should not be equal after modification");
+
     }
 
     @Test
-    @DisplayName("Test 17: Compare empty collections")
+    @DisplayName("Test 15: Compare collections by elements")
+    void testCompareCollectionsItemByItem() {
+        // WithCollection is defined in your objects package.
+        WithCollection obj1 = new WithCollection(new ArrayList<>(Arrays.asList(1, 2, 3)));
+        WithCollection obj2 = new WithCollection(new ArrayList<>(Arrays.asList(1, 2, 3)));
+
+        obj2.numbers.add(4); // Adding an element to obj2's collection
+        obj2.numbers.remove(3); // Removing an element from obj2's collection
+
+        EqualLibConfig config = new EqualLibConfig()
+                .setCompareCollectionsByElements(true);
+        assertTrue(EqualLib.areEqual(obj1, obj2, config),
+                "Collections compared item by item should be equal before modification");
+
+    }
+
+    @Test
+    @DisplayName("Test 16: Compare empty collections")
     void testEmptyCollections() {
         WithCollection obj1 = new WithCollection(new ArrayList<>());
         WithCollection obj2 = new WithCollection(new ArrayList<>());
@@ -236,12 +236,10 @@ public class ThesisTests {
                 "Empty collections should be equal");
     }
 
-    /* =========================================
-       Scenarios 18–19: Debug Mode
-       ========================================= */
+
 
     @Test
-    @DisplayName("Test 18: Enable debug mode")
+    @DisplayName("Test 17: Enable debug mode")
     void testDebugModeEnabled() {
         // Simple is defined in your objects package.
         Simple obj1 = new Simple("Debug", 10, 1.0f, 50.0, true, new byte[]{1});
@@ -252,7 +250,7 @@ public class ThesisTests {
     }
 
     @Test
-    @DisplayName("Test 19: Disable debug mode")
+    @DisplayName("Test 18: Disable debug mode")
     void testDebugModeDisabled() {
         Simple obj1 = new Simple("NoDebug", 20, 1.5f, 60.0, false, new byte[]{2});
         Simple obj2 = new Simple("NoDebug", 20, 1.5f, 60.0, false, new byte[]{2});
@@ -261,12 +259,9 @@ public class ThesisTests {
                 "Disabling debug mode should not affect the comparison result");
     }
 
-    /* =========================================
-       Scenarios 20–22: Different Object Types and null Values
-       ========================================= */
 
     @Test
-    @DisplayName("Test 20: Compare objects of different classes")
+    @DisplayName("Test 19: Compare objects of different classes")
     void testDifferentClasses() {
         // ClassA and ClassB are defined in your objects package.
         ClassA a = new ClassA(10);
@@ -276,26 +271,23 @@ public class ThesisTests {
     }
 
     @Test
-    @DisplayName("Test 21: Compare two null values")
+    @DisplayName("Test 20: Compare two null values")
     void testTwoNulls() {
         assertTrue(EqualLib.areEqual(null, null),
                 "Two nulls should be considered equal");
     }
 
     @Test
-    @DisplayName("Test 22: Compare null and non-null values")
+    @DisplayName("Test 21: Compare null and non-null values")
     void testNullAndNonNull() {
         Simple obj = new Simple("Test", 5, 1.2f, 45.0, true, new byte[]{5});
         assertFalse(EqualLib.areEqual(obj, null),
                 "A null and a non-null value should not be equal");
     }
 
-    /* =========================================
-       Scenario 23: Cyclic References
-       ========================================= */
 
     @Test
-    @DisplayName("Test 23: Compare objects with cyclic references")
+    @DisplayName("Test 22: Compare objects with cyclic references")
     void testCyclicReferences() {
         // Cyclic is defined in your objects package.
         Cyclic a1 = new Cyclic(1);
@@ -312,12 +304,9 @@ public class ThesisTests {
                 "Cyclic structures with identical references should be equal");
     }
 
-    /* =========================================
-       Scenario 24: Complex Nested Structures
-       ========================================= */
 
     @Test
-    @DisplayName("Test 24: Compare complex nested structures")
+    @DisplayName("Test 23: Compare complex nested structures")
     void testComplexNestedStructures() {
         // ComplexStructure is defined in your objects package.
         Nested nested1 = new Nested("root", new Nested("child", null));
@@ -338,12 +327,9 @@ public class ThesisTests {
                 "Complex nested structures should be equal");
     }
 
-    /* =========================================
-       Scenario 25: Combination of Inheritance, Depth, and Custom equals
-       ========================================= */
 
     @Test
-    @DisplayName("Test 25: Combination of inheritance, depth comparison, and custom equals")
+    @DisplayName("Test 24: Combination of inheritance, depth comparison, and custom equals")
     void testCombinationInheritanceDepthCustomEquals() {
         Child1 child = new Child1(10, 20);
         SpecialClass special = new SpecialClass(2);
@@ -366,29 +352,22 @@ public class ThesisTests {
                 "Combined objects should be equal according to the configuration");
     }
 
-    /* =========================================
-       Scenario 26: Combination of Ignoring Fields and Whole-Collection Comparison
-       ========================================= */
 
     @Test
-    @DisplayName("Test 26: Combination of ignoring fields and comparing collections as wholes")
+    @DisplayName("Test 25: Combination of ignoring fields and comparing collections as wholes")
     void testCombinationIgnoredAndCollectionsWhole() {
         // WithCollectionAndIgnored is defined in your objects package.
         WithCollectionAndIgnored obj1 = new WithCollectionAndIgnored(1, "Info1", Arrays.asList("a", "b"));
         WithCollectionAndIgnored obj2 = new WithCollectionAndIgnored(1, "DifferentInfo", Arrays.asList("a", "b"));
         EqualLibConfig config = new EqualLibConfig()
                 .setIgnoredFieldPaths(WithCollectionAndIgnored.class.getName() + ".info")
-                .setCompareCollectionsAsWhole(true);
+                .setCompareCollectionsByElements(true);
         assertTrue(EqualLib.areEqual(obj1, obj2, config),
                 "Objects should be equal if the differing field is ignored and collections are compared as a whole");
     }
 
-    /* =========================================
-       Scenario 27: Combination of Limited Depth and Item-by-Item Collection Comparison
-       ========================================= */
-
     @Test
-    @DisplayName("Test 27: Combination of limited depth and item-by-item collection comparison")
+    @DisplayName("Test 26: Combination of limited depth and item-by-item collection comparison")
     void testCombinationLimitedDepthCollections() {
         // WithNestedCollection is defined in your objects package.
         WithNestedCollection obj1 = new WithNestedCollection(Arrays.asList(
@@ -401,18 +380,15 @@ public class ThesisTests {
         ));
         EqualLibConfig config = new EqualLibConfig()
                 .setMaxComparisonDepth(1, false)
-                .setCompareCollectionsAsWhole(false);
+                .setCompareCollectionsByElements(false);
         // Differences at levels deeper than 1 should be ignored.
         assertTrue(EqualLib.areEqual(obj1, obj2, config),
                 "Differences in deeper collection levels should be ignored");
     }
 
-    /* =========================================
-       Scenario 28: Combination of Inheritance and Ignoring Fields
-       ========================================= */
 
     @Test
-    @DisplayName("Test 28: Combination of inheritance and ignoring fields")
+    @DisplayName("Test 27: Combination of inheritance and ignoring fields")
     void testCombinationInheritanceAndIgnoredFields() {
         // ChildWithField is defined in your objects package.
         ChildWithField obj1 = new ChildWithField(10, 20);
@@ -423,12 +399,10 @@ public class ThesisTests {
                 "Objects should be equal if the differing field is ignored");
     }
 
-    /* =========================================
-       Scenario 29: Complex Combination of Settings
-       ========================================= */
+
 
     @Test
-    @DisplayName("Test 29: Complex combination of inheritance, depth, custom equals, ignored fields, and collection comparison")
+    @DisplayName("Test 28: Complex combination of inheritance, depth, custom equals, ignored fields, and collection comparison")
     void testComplexCombination() {
         // ComplexObject is defined in your objects package.
         Child1 child1 = new Child1(10, 20);
@@ -445,7 +419,7 @@ public class ThesisTests {
         EqualLibConfig config = new EqualLibConfig()
                 .setCompareInheritedFields(true)
                 .setMaxComparisonDepth(2, true)
-                .setCompareCollectionsAsWhole(false)
+                .setCompareCollectionsByElements(false)
                 .setCustomEqualsClasses(SpecialClass.class.getName())
                 .setIgnoredFieldPaths(ComplexObject.class.getName() + ".extra")
                 .setDebugEnabled(true);
