@@ -59,6 +59,9 @@ public class EqualLibConfig {
      * @return Updated EqualLibConfig instance.
      */
     public EqualLibConfig setMaxComparisonDepth(int maxComparisonDepth, boolean useStandardEqualsAfterDepth) {
+        if (maxComparisonDepth < -1) {
+            throw new IllegalArgumentException("maxComparisonDepth must be -1 or greater");
+        }
         this.maxComparisonDepth = maxComparisonDepth;
         this.useStandardEqualsAfterDepth = useStandardEqualsAfterDepth;
         return this;
