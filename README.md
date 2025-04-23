@@ -147,6 +147,12 @@ For non-modular applications, use the `ALL-UNNAMED` target:
 
 ---
 
+## 🛠️ Playground Application
+For easy testing and demonstration of EqualLib, a simple JavaFX named [EqualLib Playground](https://github.com/Romiiis/EqualLib-Playground) was created.
+You can run it and test the library's features without needing to set up a full project.
+
+---
+
 ## 📖 License & Contribution
 
 This project is open-source under the MIT License.
@@ -158,4 +164,5 @@ Feel free to submit issues or pull requests. Contributions are welcome!
 ## 📚 Resources
 
 - [Project Repository](https://github.com/Romiiis/EqualLib)
+- [EqualLib Playground](https://github.com/Romiiis/EqualLib-Playground)
 - [Issue Tracker](https://github.com/Romiiis/EqualLib/issues)
