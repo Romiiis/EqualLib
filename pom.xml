@@ -23,7 +23,7 @@
 
     <build>
         <plugins>
-            <!-- Plugin pro vytvoření spustitelného JAR -->
+            <!-- Plugin for building the project -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -31,7 +31,7 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
-                    <release>17</release> <!-- Ensure the JDK version used is set correctly -->
+                    <release>17</release>
                 </configuration>
             </plugin>
             <plugin>
