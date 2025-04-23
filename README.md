@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="src/main/resources/EqualLibIcon-noBgr.png" alt="EqualLib Icon" width="35"><br>
+  <img src="src/main/resources/EqualLibIcon-noBgr.png" alt="EqualLib Icon" width="75"><br>
   EqualLib
 </h1>
 <p align="center">Know when two objects are truly equal</p>
