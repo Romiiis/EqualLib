@@ -54,10 +54,11 @@ mvn clean install
 ### 4. Add dependency to your `pom.xml`
 
 ```xml
+
 <dependency>
-  <groupId>com.romiis</groupId>
-  <artifactId>EqualLib</artifactId>
-  <version>YOUR_VERSION_HERE</version>
+    <groupId>com.romiiis</groupId>
+    <artifactId>EqualLib</artifactId>
+    <version>YOUR_VERSION_HERE</version>
 </dependency>
 ```
 
@@ -124,7 +125,7 @@ If you're using Java modules, you need to explicitly open access to required mod
 
 ```java
 requires EqualLib;
-opens com.romiis.myPackage to EqualLib;
+opens com.romiiis.myPackage to EqualLib;
 ```
 
 For non-modular applications, use the `ALL-UNNAMED` target:

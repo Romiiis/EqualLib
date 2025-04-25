@@ -1,6 +1,6 @@
 module EqualLib {
-    exports com.romiis.core;
+    exports com.romiiis.core;
 
-    opens com.romiis.core;
-    opens com.romiis.util;
+    opens com.romiiis.core;
+    opens com.romiiis.util;
 }
