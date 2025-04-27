@@ -5,7 +5,7 @@ import java.util.Set;
 
 /**
  * Configuration class for EqualLib.
- *
+ * <p>
  * This class customizes deep object comparison behavior, including settings for
  * ignored field paths, custom equals for specified classes or packages, maximum
  * comparison depth, and additional options.
