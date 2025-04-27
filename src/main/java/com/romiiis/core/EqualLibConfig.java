@@ -54,7 +54,7 @@ public class EqualLibConfig {
     /**
      * Sets the maximum depth for comparison.
      *
-     * @param maxComparisonDepth Maximum depth for comparison (-1 for no limit).
+     * @param maxComparisonDepth          Maximum depth for comparison (-1 for no limit).
      * @param useStandardEqualsAfterDepth If true, standard equals() is used once the maximum depth is reached.
      * @return Updated EqualLibConfig instance.
      */
@@ -104,7 +104,7 @@ public class EqualLibConfig {
      * Sets how collections should be compared.
      *
      * @param compareCollectionsByElements If true, collections are compared as whole objects by examining their internal structure.
-     *                                  If false, collections are compared element by element.
+     *                                     If false, collections are compared element by element.
      * @return Updated EqualLibConfig instance.
      */
     public EqualLibConfig setCompareCollectionsByElements(boolean compareCollectionsByElements) {
@@ -123,30 +123,67 @@ public class EqualLibConfig {
         return this;
     }
 
+    /**
+     * Gets the maximum depth for comparison.
+     *
+     * @return Maximum depth for comparison (-1 for no limit).
+     */
     public int getMaxComparisonDepth() {
         return maxComparisonDepth;
     }
 
+    /**
+     * Gets the set of fully qualified field paths to ignore during comparison.
+     *
+     * @return Set of fully qualified field paths.
+     */
     public Set<String> getIgnoredFieldPaths() {
         return ignoredFieldPaths;
     }
 
+    /**
+     * Gets the set of classes or packages for which the custom equals method should be used.
+     *
+     * @return Set of fully qualified class or package names.
+     */
     public Set<String> getCustomEqualsClasses() {
         return customEqualsClasses;
     }
 
+
+    /**
+     * Checks if standard equals() should be used after reaching the maximum depth.
+     *
+     * @return true if standard equals() is used after depth, false otherwise.
+     */
     public boolean isUseStandardEqualsAfterDepth() {
         return useStandardEqualsAfterDepth;
     }
 
+
+    /**
+     * Checks if only inherited fields should be compared.
+     *
+     * @return true if only inherited fields are compared, false otherwise.
+     */
     public boolean isCompareInheritedFields() {
         return compareInheritedFields;
     }
 
+    /**
+     * Checks if collections should be compared only by elements.
+     *
+     * @return true if collections are compared by elements, false otherwise.
+     */
     public boolean isCompareCollectionsByElements() {
         return compareCollectionsByElements;
     }
 
+    /**
+     * Checks if debug mode is enabled.
+     *
+     * @return true if debug mode is enabled, false otherwise.
+     */
     public boolean isDebugEnabled() {
         return debugEnabled;
     }

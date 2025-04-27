@@ -1,3 +1,7 @@
+/**
+ * EqualLib module
+ * @author Romiiis
+ */
 module EqualLib {
     exports com.romiiis.core;
 
