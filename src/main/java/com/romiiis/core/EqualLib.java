@@ -95,7 +95,9 @@ public class EqualLib {
 
             // If one of the objects is null, return false
             if (Pair.isNullPresent(pair)) {
-                if (config.isDebugEnabled()) System.out.println("One of the objects is null");
+                if (config.isDebugEnabled()){
+                    System.out.println(pair + " -> [One of the objects is null]");
+                }
                 return false;
             }
 
@@ -161,9 +163,10 @@ public class EqualLib {
 
                 if (config.isDebugEnabled()) {
                     if (config.isCompareInheritedFields())
-                        System.out.println("No common superclass found for pair: " + pairToCompare);
+                        System.out.println(pairToCompare + " -> [No common superclass found]");
 
-                    else System.out.println("No class found for pair: " + pairToCompare);
+                    else
+                        System.out.println(pairToCompare + " -> [No class found for pair]");
                 }
 
                 return false;
@@ -176,7 +179,7 @@ public class EqualLib {
 
         if (useCustomEquals(type, config)) {
             if (!pairToCompare.getFirst().equals(pairToCompare.getSecond())) {
-                if (config.isDebugEnabled()) System.out.println("Custom equals method returned false");
+                if (config.isDebugEnabled()) System.out.println(pairToCompare + " -> [Custom equals method returned false]");
                 return false;
             }
             return true;
@@ -204,7 +207,7 @@ public class EqualLib {
 
         }
 
-        if (config.isDebugEnabled()) System.out.println("Pair: " + pairToCompare + " is equal: " + result);
+        if (config.isDebugEnabled()) System.out.println(pairToCompare + " -> [Result: " + result + "]");
         return result;
 
     }
@@ -235,7 +238,7 @@ public class EqualLib {
 
         // Check if the number of fields is equal
         if (fieldsA.length != fieldsB.length) {
-            if (config.isDebugEnabled()) System.out.println("Number of fields is not equal");
+            if (config.isDebugEnabled()) System.out.println(pairToCompare + " -> [Number of fields is not equal]");
             return false;
         }
 
@@ -247,7 +250,7 @@ public class EqualLib {
 
             // If no matching field is found, the objects are not equal
             if (fieldB == null) {
-                if (config.isDebugEnabled()) System.out.println("Field: " + fieldA.getName() + " is not equal");
+                if (config.isDebugEnabled()) System.out.println(pairToCompare + " -> [Field not found: " + fieldA.getName() + "]");
                 return false;
             }
 
@@ -267,7 +270,7 @@ public class EqualLib {
 
                 if (valueA == null || valueB == null) {
                     if (config.isDebugEnabled())
-                        System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
+                        System.out.println(pairToCompare + " -> [Field " + fieldA.getName() + " is null]");
                     return false;
                 }
 
@@ -276,12 +279,12 @@ public class EqualLib {
 
                     if (!compareWrapperOrString(new Pair(valueA, valueB))) {
                         if (config.isDebugEnabled())
-                            System.out.println("Field: " + fieldA.getName() + " is not equal " + valueA + " " + valueB);
+                            System.out.println(pairToCompare + " -> [Field " + fieldA.getName() + " is not equal: " + valueA + " " + valueB + "]");
                         return false;
                     }
 
                     if (config.isDebugEnabled())
-                        System.out.println("Field: " + fieldA.getName() + " is equal " + valueA + " " + valueB);
+                        System.out.println(pairToCompare + " -> [Field " + fieldA.getName() + " is equal: " + valueA + " " + valueB + "]");
 
                 } else {
                     queue.add(new Pair(valueA, valueB, pairToCompare.getDepth() + 1));

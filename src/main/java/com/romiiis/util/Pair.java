@@ -173,11 +173,10 @@ public class Pair {
 
     @Override
     public String toString() {
-        return "Pair{" +
-                "first=" + first +
-                ", second=" + second +
-                ", depth=" + depth +
-                '}';
+        return "| A=" + first +
+                " & B=" + second +
+                "[depth=" + depth +
+                "]|";
     }
 
 
